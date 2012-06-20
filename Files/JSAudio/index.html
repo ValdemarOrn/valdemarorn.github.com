@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Web Audio Tone Generator</title>
+		<script src="js/jquery-1.6.2.min.js"></script>
+		<script src="js/Player.js"></script>
+		<script src="js/AudioProcessing.js"></script>
+		<script>
+
+/* Create a Player generator from an AudioContext */
+var context = new webkitAudioContext();
+var Player = new Player(context);
+
+
+
+$(document).ready(function() {
+  $('#Play').click(function(){Player.Play()});
+  $('#Pause').click(function(){Player.Stop()});
+  $('#Reset').click(function(){Player.Reset()});
+});
+
+		</script>
+	</head>
+<body>
+
+    <a href="#" id="Play">Play</a>
+	<a href="#" id="Pause">Pause</a>
+	<a href="#" id="Reset">Reset</a>
+
+</body>
+</html>
