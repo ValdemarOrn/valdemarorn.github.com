@@ -299,66 +299,67 @@ Phong.AI = function (parent)
 		var ballX = this.Parent.Ball.PosX;
 		var paddleX = this.Parent.PaddleB.PosX + width / 2;
 
-		var speed = this.Parent.PaddleSpeed;
-		if (this.Parent.GameType == Phong.GameTypes.Easy)
-			speed = speed * 0.65;
-		if (this.Parent.GameType == Phong.GameTypes.Medium)
-			speed = speed * 0.8;
-
 		if (this.Parent.Ball.DirY < 0)
 		{
-			if (ballX < paddleX - 0.2 * width)
+			// calculate where the ball will hit
+			var expectedLanding = this.Parent.Ball.PosX + ((this.Parent.Ball.PosY - 20) * this.Parent.Ball.DirX);
+
+			// if the ball will bounce the sides
+			if (expectedLanding < 0)
+				expectedLanding = -expectedLanding;
+			else if (expectedLanding > this.Parent.Width)
+				expectedLanding = this.Parent.Width - (expectedLanding - this.Parent.Width);
+
+			// if the ball will bounce two times, then AI can't track it
+			if (expectedLanding < 0)
+				expectedLanding = null;
+			else if (expectedLanding > this.Parent.Width)
+				expectedLanding = null;
+
+			// easy just tracks the ball
+			var goto = ballX;
+
+			// Medium and hard track the expected landing
+			if (this.Parent.GameType != Phong.GameTypes.Easy)
 			{
-				this.Parent.PaddleB.Velocity = -speed;
-				this.Parent.PaddleB.Process();
+				// if we can't find expected landing track between middle and ball
+				if (expectedLanding === null)
+					goto = ballX / 2 + this.Parent.Width / 2;
+				else
+					goto = expectedLanding;
 			}
-			else if (ballX > paddleX + 0.2 * width)
-			{
-				this.Parent.PaddleB.Velocity = speed;
-				this.Parent.PaddleB.Process();
-			}
+
+			this.MoveTowards(goto);
+		}
+		// in hard mode, paddle tracks between the middle and the ball when it's going down
+		else if (this.Parent.Ball.DirY > 0 && this.Parent.GameType == Phong.GameTypes.Hard)
+		{
+			var scale = this.Parent.Width / this.Parent.Height;
+			var goto = ballX / 2 + this.Parent.Width / 4;
+			this.MoveTowards(goto);
 		}
 
-		var scale = this.Parent.Width / this.Parent.Height;
-		
-		// If the arena is wide and we are in medium mode, the paddle returns to the center
-		var mediumReturn = this.Parent.Ball.DirY > 0 && this.Parent.GameType == Phong.GameTypes.Medium && scale > 1.5
-		
-		// if the arena is not wide and we are in hard mode, the paddle returns to the center
-		var hardReturn = this.Parent.Ball.DirY > 0 && this.Parent.GameType == Phong.GameTypes.Hard && scale <= 1.5
-		
-		if (mediumReturn || hardReturn)
-		{
-			var dx = this.Parent.Width / 2 - paddleX;
-			if (dx > width / 2)
-			{
-				this.Parent.PaddleB.Velocity = speed;
-				this.Parent.PaddleB.Process();
-			}
-			if (dx < -(width / 2))
-			{
-				this.Parent.PaddleB.Velocity = -speed;
-				this.Parent.PaddleB.Process();
-			}
-		}
-		
-		// if the arena is wide then hard mode constantly tracks the ball
-		if(this.Parent.Ball.DirY > 0 && this.Parent.GameType == Phong.GameTypes.Hard && scale > 1.5)
-		{
-			if (ballX < paddleX - 0.2 * width)
-			{
-				this.Parent.PaddleB.Velocity = -speed;
-				this.Parent.PaddleB.Process();
-			}
-			else if (ballX > paddleX + 0.2 * width)
-			{
-				this.Parent.PaddleB.Velocity = speed;
-				this.Parent.PaddleB.Process();
-			}
-		}
-		
-		
 
+
+	}
+
+	this.MoveTowards = function (point)
+	{
+		var speed = this.Parent.PaddleSpeed;
+		var width = this.Parent.PaddleB.Width;
+		var paddleX = this.Parent.PaddleB.PosX + width / 2;
+
+		// Move the paddle to the goto point
+		if (point < paddleX - 0.2 * width)
+		{
+			this.Parent.PaddleB.Velocity = -speed;
+			this.Parent.PaddleB.Process();
+		}
+		else if (point > paddleX + 0.2 * width)
+		{
+			this.Parent.PaddleB.Velocity = speed;
+			this.Parent.PaddleB.Process();
+		}
 	}
 }
 
@@ -396,8 +397,8 @@ Phong.Game = function (canvas, fps)
 
 	this.Points = 21;
 	this.GameType = Phong.GameTypes.Multiplayer;
-	this.BallSpeed = 4.5;
-	this.PaddleSpeed = 4.5;
+	this.BallSpeed = 5.0;
+	this.PaddleSpeed = 3.5;
 
 	this.Controller = new Phong.KeyboardController();
 	this.Controller.Bind();
