@@ -1,0 +1,23 @@
+<html>
+<head>
+<script type="text/javascript" src="phong.js"></script>
+
+<script type="text/javascript">
+
+	window.onload = function () {
+		var canvas = document.getElementById("myCanvas");
+		var game = new Phong.Game(canvas, 60);
+		if(game.ContextLoaded)
+			game.Start();
+	};
+
+</script>
+</head>
+
+<body style="text-align: center;">
+	<div style="font: 24px Verdana; text-align: center; padding-bottom: 10px; padding-top: 30px;">Phong</div>
+	<canvas id="myCanvas" width="400" height="400"></canvas>
+	<div style="font: 14px Verdana; text-align: center; padding-top: 10px;">Valdemar Erlingsson - <a href="http://www.github.com/ValdemarOrn/">My Github</a></div>
+</body>
+
+</html>
