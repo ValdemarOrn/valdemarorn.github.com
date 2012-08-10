@@ -369,17 +369,17 @@ Phong.Game = function (canvas, fps)
 {
 	this.ContextLoaded = false;
 	var context = null;
-	
+
 	try
 	{
 		context = canvas.getContext("2d");
 	}
-	catch(err)
+	catch (err)
 	{
 		alert("Canvas Element is not supported in this browser");
 		return;
 	}
-	
+
 	this.ContextLoaded = true;
 
 	this.ColorA = 'rgba(12, 95, 168, 1.0)'; // blue
@@ -562,7 +562,7 @@ Phong.Game = function (canvas, fps)
 		var text = "-";
 		var len = (ctx.measureText(text)).width;
 		ctx.fillStyle = "rgb(0,0,0)";
-		ctx.fillText(text, this.Width / 2 - len/2, this.Height / 2);
+		ctx.fillText(text, this.Width / 2 - len / 2, this.Height / 2);
 
 		var text = "" + this.PaddleA.Score;
 		var len = (ctx.measureText(text)).width;
@@ -660,11 +660,39 @@ Phong.Game = function (canvas, fps)
 	};
 
 	this.StartupSelection = 0;
+	this.ShowSplashScreenFrames = -1;
 
 	// Draws the startup screen and reads key input
 	this.ShowStartup = function ()
 	{
 		var ctx = this.Context;
+
+		// loads the splash image. When it is loaded it will show it for 2 seconds
+		if (this.ShowSplashScreenFrames === -1)
+		{
+			var img = new Image();
+			img.src = 'logo.png';
+			var game = this;
+			img.onload = function ()
+			{
+				var size = (game.Width < game.Height) ? game.Width : game.Height;
+				var x = game.Width / 2 - size / 2;
+				var y = game.Height / 2 - size / 2;
+
+				context.drawImage(img, x, y, size, size);
+				game.ShowSplashScreenFrames = game.FPS * 2;
+			}
+
+			return;
+		}
+
+		// countdown while showing splash screen
+		if (this.ShowSplashScreenFrames > 0)
+		{
+			// draw splash screen
+			this.ShowSplashScreenFrames--;
+			return;
+		}
 
 		// draw playing field and text
 		ctx.clearRect(0, 0, this.Width, this.Height);
@@ -924,7 +952,12 @@ Phong.Game = function (canvas, fps)
 
 		// find winning player
 		ctx.font = "24px Verdana";
-		var text = (this.PaddleA.Score > this.PaddleB.Score) ? "Player A Wins" : "Player B Wins";
+		var text = "";
+		if (this.GameType === Phong.GameTypes.Multiplayer)
+			text = (this.PaddleA.Score > this.PaddleB.Score) ? "Player A Wins" : "Player B Wins";
+		else
+			text = (this.PaddleA.Score > this.PaddleB.Score) ? "Player Wins" : "Computer Wins";
+
 		var len = (ctx.measureText(text)).width;
 		ctx.fillText(text, this.Width / 2 - len / 2, this.Height / 2 - 20);
 
