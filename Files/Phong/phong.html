@@ -2,6 +2,8 @@
 <html>
 <head>
 	<title>Phong - Valdemar Erlingsson</title>
+	<meta name="description" content="HTML5 canvas game written in Javascript.">
+	<meta name="keywords" content="phong, pong, game, html5, canvas, javascript">
 	<script type="text/javascript" src="phong.js"></script>
 
 	<script type="text/javascript">
@@ -17,6 +19,18 @@
 </head>
 
 <body style="text-align: center;">
+
+	<div id="fb-root"></div>
+	<script>
+	(function(d, s, id) {
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return;
+		js = d.createElement(s); js.id = id;
+		js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));	
+	</script>
+
 	<div style="font: 24px Verdana; text-align: center; padding-bottom: 10px; padding-top: 30px;">Phong</div>
 	<canvas id="myCanvas" width="400" height="400"></canvas>
 	<div style="font: 14px Verdana; text-align: center; padding-top: 10px;">
@@ -25,6 +39,7 @@
 		<a style="color: #487796;" href="https://github.com/ValdemarOrn/valdemarorn.github.com/tree/master/Files/Phong">See the code</a>
 		<div style="font-size: 10px; padding: 5px;">Phong is released under the MIT license</div>
 	</div>
+	<div class="fb-like" data-href="http://valdemarorn.github.com/Files/Phong/phong.html" data-send="false" data-width="450" data-show-faces="true"></div>
 </body>
 
 </html>
