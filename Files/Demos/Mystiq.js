@@ -72,7 +72,7 @@ M.Curve = function (parent, count)
 		p.DirX = Math.random() - 0.5;
 		p.DirY = Math.random() - 0.5;
 		p.Normalize();
-		p.Speed = 2;
+		p.Speed = 0.2 + Math.random() * 3;
 		this.Particles[i] = p;
 	}
 
@@ -114,7 +114,7 @@ M.Curve = function (parent, count)
 	this.GetColor = function (index)
 	{
 		index = index % 1.0;
-		var colors = hsvToRgb(index * 360, 80, 50);
+		var colors = hsvToRgb(index * 360, 80, 100);
 		var r = colors[0].toString(16);
 		var g = colors[1].toString(16);
 		var b = colors[2].toString(16);
@@ -136,10 +136,10 @@ M.Main = function (canvas)
 {
 	this.Canvas = canvas;
 	this.Context = canvas.getContext("2d");
-	this.Width = 800;
+	this.Width = 1000;
 	this.Height = 800;
 
-	this.Curve = new M.Curve(this, 40);
+	this.Curve = new M.Curve(this, Math.floor(10 + Math.random() * 50));
 
 	this.Init = function ()
 	{
@@ -154,10 +154,9 @@ M.Main = function (canvas)
 
 		// clear
 		//c.beginPath();
-		c.fillStyle = "rgba(255, 255, 255, 0.1)";
+		c.fillStyle = "rgba(0, 0, 0, 0.1)";
 		c.rect(-5, -5, this.Width + 10, this.Height + 10);
 		c.fill();
-		
 
 		this.Curve.Process(c);
 	}
