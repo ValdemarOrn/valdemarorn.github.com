@@ -218,7 +218,7 @@ M.Main = function (canvas)
 	this.Init = function ()
 	{
 		this.Curve.Init();
-		this.Curve.Bezier = (Math.random() >= 0.5);
+		this.Curve.Bezier = (Math.random() >= 0.3);
 		//if (this.Curve.Bezier)
 		//	this.Curve.Spillover = 0.00;
 
