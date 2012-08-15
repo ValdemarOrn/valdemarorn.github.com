@@ -137,7 +137,7 @@ M.Main = function (canvas)
 	this.Canvas = canvas;
 	this.Context = canvas.getContext("2d");
 	this.Width = 1000;
-	this.Height = 800;
+	this.Height = 700;
 
 	this.Curve = new M.Curve(this, Math.floor(10 + Math.random() * 50));
 
