@@ -61,7 +61,7 @@ M.Curve = function (parent, count)
 	this.Parent = parent;
 	this.Particles = new Array(count);
 	this.Count = count;
-	this.ColorIndex = 0.0;
+	this.ColorIndex = Math.random();
 	this.ColorSpeed = 0.003;
 
 	for (i = 0; i < count; i++)
@@ -139,7 +139,7 @@ M.Main = function (canvas)
 	this.Width = 1000;
 	this.Height = 700;
 
-	this.Curve = new M.Curve(this, Math.floor(10 + Math.random() * 50));
+	this.Curve = new M.Curve(this, Math.floor(10 + Math.random() * 40));
 
 	this.Init = function ()
 	{
