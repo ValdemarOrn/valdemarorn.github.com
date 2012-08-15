@@ -1,12 +1,38 @@
 <html>
 
 <head>
+
+	<title>Mystiq - Javascript, Canvas, HTML5 Demo</title>
+	<meta name="description" content="HTML5 canvas demo written in Javascript.">
+	<meta name="keywords" content="html5, canvas, javascript, demo">
+	
+	<meta property="og:title" content="Mystiq - HTML5 Demo" />
+	<meta property="og:type" content="programming" />
+	<meta property="og:url" content="http://valdemarorn.github.com/Files/Demos/Mystiq.html" />
+	<meta property="og:image" content="http://valdemarorn.github.com/Files/Demos/Mystiq.png" />
+	<meta property="og:site_name" content="Mystiq - HTML5 Demo" />
+	<meta property="og:description" content="HTML5 graphic demo written in Javascript." />
+	<meta property="fb:admins" content="1452375564" />
+
 </head>
 
 <body style="margin: 0px; text-align: center; padding-top: 0px; background: #000; color: #555; font: 14px Verdana; ">
 	
 	<script type="text/javascript" src="Mystiq.js"></script>
 	
+	<div id="fb-root"></div>
+	<script>
+		(function (d, s, id)
+		{
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) return;
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+			fjs.parentNode.insertBefore(js, fjs);
+		} (document, 'script', 'facebook-jssdk'));
+		
+	</script>
+
 	<div>
 		<canvas id="c">
 	</div>
@@ -16,6 +42,8 @@
 		<a style="color: #487796;" href="http://www.github.com/ValdemarOrn/">My Github</a> - 
 		<a style="color: #487796;" href="https://github.com/ValdemarOrn/valdemarorn.github.com/tree/master/Files/Demos">See the code</a>
 	</div>
+
+	<div class="fb-like" data-href="http://valdemarorn.github.com/Files/Demos/Mystiq.html" data-send="false" data-width="350" data-show-faces="false" data-font="arial"></div>
 
 </body>
 

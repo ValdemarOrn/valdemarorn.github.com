@@ -10,7 +10,7 @@ window.onload = function ()
 	function resizeEvent()
 	{
 		canvas.width = window.innerWidth - 10;
-		canvas.height = window.innerHeight - 70;
+		canvas.height = window.innerHeight - 100;
 		m.Width = canvas.width;
 		m.Height = canvas.height;
 	}
@@ -24,6 +24,7 @@ window.onload = function ()
 // Objects
 
 M = {};
+
 M.Particle = function (parent, curve)
 {
 	this.Parent = parent;
@@ -34,6 +35,7 @@ M.Particle = function (parent, curve)
 	this.DirY = 0;
 	this.Speed = 1.0;
 
+	// normalize DirX and DirY to be a unit vector
 	this.Normalize = function ()
 	{
 		var len = Math.sqrt(this.DirX * this.DirX + this.DirY * this.DirY);
@@ -81,12 +83,10 @@ M.Curve = function (parent, count)
 	this.Count = count;
 	this.ColorIndex = Math.random();
 	this.ColorSpeed = 0.003;
+	this.Bezier = false;
 
 	// how many % outside the canvas the particles can move before bouncing
 	this.Spillover = 0; 
-
-	// Configurable options
-	this.Bezier = false;
 
 	this.Init = function ()
 	{
@@ -106,9 +106,6 @@ M.Curve = function (parent, count)
 	this.Process = function (c)
 	{
 		var first = this.Particles[0];
-
-		first.Move();
-		var p = first;
 
 		if (!this.Bezier)
 		{
@@ -158,7 +155,7 @@ M.Curve = function (parent, count)
 				var grd = c.createLinearGradient(x0, y0, x1, y1);
 				grd.addColorStop(0, this.GetColor(colorMin));
 				grd.addColorStop(1, this.GetColor(colorMax));
-				c.strokeStyle = grd; // this.GetColor(this.ColorIndex);
+				c.strokeStyle = grd;
 
 				c.beginPath();
 				c.moveTo(x0, y0);
@@ -173,7 +170,7 @@ M.Curve = function (parent, count)
 		this.ColorIndex += this.ColorSpeed;
 	}
 
-	// maps point 0...n to 0...n/2...0
+	// maps points 0...n to 0...n/2...0
 	this.ColorLoop = function (i)
 	{
 		if (this.Count % 2 == 0)
@@ -212,7 +209,7 @@ M.Main = function (canvas)
 	this.Width = 1000;
 	this.Height = 700;
 
-	var points = Math.floor(4 + Math.random() * 10);
+	var points = Math.floor(4 + Math.random() * 12);
 	if (points % 2 !== 0) // numbers of points must be even when using bezier curves, otherwise the curve won't close
 		points++;
 
@@ -222,8 +219,8 @@ M.Main = function (canvas)
 	{
 		this.Curve.Init();
 		this.Curve.Bezier = (Math.random() >= 0.5);
-		if (this.Curve.Bezier)
-			this.Curve.Spillover = 0.00;
+		//if (this.Curve.Bezier)
+		//	this.Curve.Spillover = 0.00;
 
 		this.Canvas.width = this.Width;
 		this.Canvas.height = this.Height;
