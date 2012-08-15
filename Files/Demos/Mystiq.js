@@ -3,8 +3,20 @@
 window.onload = function ()
 {
 	var canvas = document.getElementById("c");
+
 	var m = new M.Main(canvas);
 	m.Init();
+
+	function resizeEvent()
+	{
+		canvas.width = window.innerWidth - 10;
+		canvas.height = window.innerHeight - 70;
+		m.Width = canvas.width;
+		m.Height = canvas.height;
+	}
+
+	window.onresize = resizeEvent;
+	resizeEvent();
 
 	setInterval(function () { m.Process(); }, 10);
 }
@@ -12,9 +24,10 @@ window.onload = function ()
 // Objects
 
 M = {};
-M.Particle = function (parent)
+M.Particle = function (parent, curve)
 {
 	this.Parent = parent;
+	this.Curve = curve;
 	this.X = 0;
 	this.Y = 0;
 	this.DirX = 0;
@@ -30,27 +43,32 @@ M.Particle = function (parent)
 
 	this.Move = function ()
 	{
-		this.X = this.X + this.DirX * this.Speed;
-		if (this.X < 0)
+		var minX = -this.Parent.Width * this.Curve.Spillover;
+		var maxX = this.Parent.Width * (1 + this.Curve.Spillover);
+		var minY = -this.Parent.Height * this.Curve.Spillover;
+		var maxY = this.Parent.Height * (1 + this.Curve.Spillover);
+
+		this.X = this.X + this.DirX * this.Speed * this.Parent.Width / 1000;
+		if (this.X < minX)
 		{
-			this.X = -this.X;
+			this.X = minX + Math.diff(this.X, minX);
 			this.DirX = -this.DirX;
 		}
-		else if (this.X > this.Parent.Width)
+		else if (this.X > maxX)
 		{
-			this.X = this.Parent.Width - Math.diff(this.X, this.Parent.Width);
+			this.X = maxX - Math.diff(this.X, maxX);
 			this.DirX = -this.DirX;
 		}
 
-		this.Y = this.Y + this.DirY * this.Speed;
-		if (this.Y < 0)
+		this.Y = this.Y + this.DirY * this.Speed * this.Parent.Height / 600;
+		if (this.Y < minY)
 		{
-			this.Y = -this.Y;
+			this.Y = minY + Math.diff(this.Y, minY);
 			this.DirY = -this.DirY;
 		}
-		else if (this.Y > this.Parent.Height)
+		else if (this.Y > maxY)
 		{
-			this.Y = this.Parent.Height - Math.diff(this.Y, this.Parent.Height);
+			this.Y = maxY - Math.diff(this.Y, maxY);
 			this.DirY = -this.DirY;
 		}
 	}
@@ -64,16 +82,25 @@ M.Curve = function (parent, count)
 	this.ColorIndex = Math.random();
 	this.ColorSpeed = 0.003;
 
-	for (i = 0; i < count; i++)
+	// how many % outside the canvas the particles can move before bouncing
+	this.Spillover = 0; 
+
+	// Configurable options
+	this.Bezier = false;
+
+	this.Init = function ()
 	{
-		var p = new M.Particle(parent);
-		p.X = Math.random() * parent.Width;
-		p.Y = Math.random() * parent.Height;
-		p.DirX = Math.random() - 0.5;
-		p.DirY = Math.random() - 0.5;
-		p.Normalize();
-		p.Speed = 0.2 + Math.random() * 3;
-		this.Particles[i] = p;
+		for (i = 0; i < count; i++)
+		{
+			var p = new M.Particle(this.Parent, this);
+			p.X = Math.random() * this.Parent.Width;
+			p.Y = Math.random() * this.Parent.Height;
+			p.DirX = Math.random() - 0.5;
+			p.DirY = Math.random() - 0.5;
+			p.Normalize();
+			p.Speed = 0.2 + Math.random() * 3;
+			this.Particles[i] = p;
+		}
 	}
 
 	this.Process = function (c)
@@ -83,32 +110,78 @@ M.Curve = function (parent, count)
 		first.Move();
 		var p = first;
 
-		for (i = 1; i < this.Count; i++)
+		if (!this.Bezier)
 		{
-			var prev = p;
-			p = this.Particles[i];
+			for (i = 0; i < this.Count; i++)
+			{
+				var p0 = this.Particles[i];
+				var p1 = this.Particles[(i + 1) % this.Count];
 
-			var colorMin = this.ColorIndex + 0.2 * i / this.Count;
-			var colorMed = this.ColorIndex + 0.2 * (i + 0.5) / this.Count;
-			var colorMax = this.ColorIndex + 0.2 * (i + 1.0) / this.Count;
+				var k0 = this.ColorLoop(i);
+				var k1 = this.ColorLoop(i + 1);
 
-			var grd = c.createLinearGradient(prev.X, prev.Y, p.X, p.Y);
-			grd.addColorStop(0, this.GetColor(colorMin));
-			grd.addColorStop(0.5, this.GetColor(colorMin));
-			grd.addColorStop(1, this.GetColor(colorMin));
-			c.strokeStyle = grd; // this.GetColor(this.ColorIndex);
+				var colorMin = this.ColorIndex + 0.5 * k0 / this.Count;
+				var colorMax = this.ColorIndex + 0.5 * k1 / this.Count;
 
-			c.beginPath();
-			c.moveTo(prev.X, prev.Y);
-			c.lineTo(p.X, p.Y);
+				var grd = c.createLinearGradient(p0.X, p0.Y, p1.X, p1.Y);
+				grd.addColorStop(0, this.GetColor(colorMin));
+				grd.addColorStop(1, this.GetColor(colorMax));
+				c.strokeStyle = grd; // this.GetColor(this.ColorIndex);
 
-			if (i == this.Count - 1)
-				c.lineTo(first.X, first.Y);
-			c.stroke();
-			p.Move();
+				c.beginPath();
+				c.moveTo(p0.X, p0.Y);
+				c.lineTo(p1.X, p1.Y);
+				c.stroke();
+			}
+		}
+		else
+		{
+			for (var i = 0; i < this.Count - 1; i = i + 2)
+			{
+				var p0 = this.Particles[i];
+				var p1 = this.Particles[(i + 1) % this.Count];
+				var p2 = this.Particles[(i + 2) % this.Count];
+				var p3 = this.Particles[(i + 3) % this.Count];
+
+				var k0 = this.ColorLoop(i);
+				var k1 = this.ColorLoop((i + 2) % this.Count);
+
+				var colorMin = this.ColorIndex + 0.5 * k0 / this.Count;
+				var colorMax = this.ColorIndex + 0.5 * k1 / this.Count;
+
+				var x0 = (p0.X + p1.X) / 2;
+				var y0 = (p0.Y + p1.Y) / 2;
+
+				var x1 = (p2.X + p3.X) / 2;
+				var y1 = (p2.Y + p3.Y) / 2;
+
+				var grd = c.createLinearGradient(x0, y0, x1, y1);
+				grd.addColorStop(0, this.GetColor(colorMin));
+				grd.addColorStop(1, this.GetColor(colorMax));
+				c.strokeStyle = grd; // this.GetColor(this.ColorIndex);
+
+				c.beginPath();
+				c.moveTo(x0, y0);
+				c.bezierCurveTo(p1.X, p1.Y, p2.X, p2.Y, x1, y1);
+				c.stroke();
+			}
 		}
 
+		for (i = 0; i < this.Count; i++)
+			this.Particles[i].Move();
+
 		this.ColorIndex += this.ColorSpeed;
+	}
+
+	// maps point 0...n to 0...n/2...0
+	this.ColorLoop = function (i)
+	{
+		if (this.Count % 2 == 0)
+			var k = (i < this.Count / 2) ? i : (this.Count - 1 - i);
+		else
+			var k = (i < this.Count / 2) ? i : (this.Count - i);
+
+		return k;
 	}
 
 	this.GetColor = function (index)
@@ -139,10 +212,19 @@ M.Main = function (canvas)
 	this.Width = 1000;
 	this.Height = 700;
 
-	this.Curve = new M.Curve(this, Math.floor(10 + Math.random() * 40));
+	var points = Math.floor(4 + Math.random() * 10);
+	if (points % 2 !== 0) // numbers of points must be even when using bezier curves, otherwise the curve won't close
+		points++;
+
+	this.Curve = new M.Curve(this, points);
 
 	this.Init = function ()
 	{
+		this.Curve.Init();
+		this.Curve.Bezier = (Math.random() >= 0.5);
+		if (this.Curve.Bezier)
+			this.Curve.Spillover = 0.00;
+
 		this.Canvas.width = this.Width;
 		this.Canvas.height = this.Height;
 	}
@@ -152,8 +234,10 @@ M.Main = function (canvas)
 		var c = this.Context;
 		var p = this.Particle;
 
-		// clear
-		//c.beginPath();
+		// zoom effect
+		c.drawImage(this.Canvas, -4, -4, this.Width + 8, this.Height + 8);
+
+		c.beginPath();
 		c.fillStyle = "rgba(0, 0, 0, 0.1)";
 		c.rect(-5, -5, this.Width + 10, this.Height + 10);
 		c.fill();
