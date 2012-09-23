@@ -59,7 +59,7 @@ Player = function(context)
 {
   this.n = 0;
   this.context = context;
-  this.node = context.createJavaScriptNode(128, 1, 1);
+  this.node = context.createJavaScriptNode(512, 1, 1);
 
   var t = this;
   this.node.onaudioprocess = function(e) { t.Process(e) };
@@ -70,12 +70,11 @@ Player = function(context)
 
 Player.prototype.Process = function(e)
 {
-  var R = e.outputBuffer.getChannelData(0);
-  var L = e.outputBuffer.getChannelData(1);
+  var L = e.outputBuffer.getChannelData(0);
 
   for (var i = 0; i < L.length; ++i)
   {
-    R[i] = L[i] = 0.5 * this.Generator.Process(this.n);
+    L[i] = 0.5 * this.Generator.Process(this.n);
 	this.n++;
   }
 }
