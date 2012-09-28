@@ -1,0 +1,66 @@
+﻿
+
+.Example
+{
+	text-align: left;
+	clear: both;
+	padding-bottom: 20px;
+}
+
+.SmallLabel
+{
+	text-align: left;
+	clear: both;
+	font-size: 14pt;
+	padding-top: 10px;
+}
+
+hr
+{
+	background-color: #ccc;
+	height: 2px;
+	width: 60%;
+	border-radius: 1px;
+	border: 0px;
+}
+
+.reveal pre
+{
+	width: 100%;
+	font-size: 14pt;
+	-moz-tab-size: 2;
+	-o-tab-size:   2;
+	tab-size:      2;
+	
+	max-height: 600px;
+	
+	overflow-y: auto;
+}
+
+code pre
+{
+	max-height: 600px;
+}
+
+.SmallerCode
+{
+	font-size: 12pt !important;
+	
+}
+
+::selection { 
+	background:#93BCC9; 
+	color:#fff; 
+	text-shadow: none; 
+}
+
+.BgCorner
+{
+	font-family: 'League Gothic', Impact, sans-serif;
+	font-size: 32pt;
+	border: 1px solid red;
+	position:absolute;
+	top: 0px !important;
+	left: 0px !important;
+	
+}
