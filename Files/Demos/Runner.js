@@ -9,7 +9,7 @@ $(document).ready(function ()
 	setInterval(function () { m.Process(); }, 10);
 	
 	$('#particleCount').val('30');
-	$('#speed').val('7');
+	$('#speed').val('3');
 	$('#renderWidth').val(window.innerWidth);
 	$('#renderHeight').val(window.innerHeight);
 	$('#boxWidth').val('20');
