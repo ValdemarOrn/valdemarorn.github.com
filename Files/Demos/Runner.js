@@ -12,8 +12,9 @@ $(document).ready(function ()
 	$('#speed').val('3');
 	$('#renderWidth').val(window.innerWidth);
 	$('#renderHeight').val(window.innerHeight);
-	$('#boxWidth').val('20');
-	$('#boxHeight').val('2');
+	$('#boxWidth').val('10');
+	$('#boxHeight').val('1');
+	$('#vertical').prop("checked", true);
 
 	$('#particleCount').change(function ()
 	{
