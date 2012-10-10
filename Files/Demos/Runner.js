@@ -135,7 +135,7 @@ M.Entity = function (parent)
 			this.X = this.X + this.Speed * this.Parent.EntitySpeed * 0.1 * (this.Parent.Width / 1000);
 			if (this.X > this.Parent.Width)
 			{
-				this.X = this.X - this.Parent.Width - 2*this.Parent.EntityHeight;
+				this.X = this.X - this.Parent.Width - 2*this.Parent.EntityWidth;
 				this.Y = Math.random() * parent.Height;
 			}
 			else if (this.X < -this.Parent.EntityWidth)
