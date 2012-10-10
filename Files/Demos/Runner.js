@@ -84,12 +84,12 @@ $(document).ready(function ()
 
 	$('#control').mouseenter(function ()
 	{
-		$(this).animate({ height: 140, opacity: 1.0 }, 1000);
+		$(this).animate({ height: 140, opacity: 1.0 }, 100);
 	});
 
 	$('#control').mouseleave(function ()
 	{
-		$(this).animate({ height: 20, opacity: 0.6 }, 1000);
+		$(this).animate({ height: 20, opacity: 0.6 }, 100);
 	});
 
 	$('#particleCount').trigger('change');
@@ -121,12 +121,12 @@ M.Entity = function (parent)
 			this.Y = this.Y + this.Speed * this.Parent.EntitySpeed * 0.1 * (this.Parent.Height / 1000);
 			if (this.Y > this.Parent.Height)
 			{
-				this.Y = this.Y - this.Parent.Height - this.Parent.EntityHeight;
+				this.Y = this.Y - this.Parent.Height - 2*this.Parent.EntityHeight;
 				this.X = Math.random() * this.Parent.Width;
 			}
 			else if (this.Y < -this.Parent.EntityHeight)
 			{
-				this.Y = this.Y + this.Parent.Height + this.Parent.EntityHeight;
+				this.Y = this.Y + this.Parent.Height + 2*this.Parent.EntityHeight;
 				this.X = Math.random() * this.Parent.Width;
 			}
 		}
@@ -135,12 +135,12 @@ M.Entity = function (parent)
 			this.X = this.X + this.Speed * this.Parent.EntitySpeed * 0.1 * (this.Parent.Width / 1000);
 			if (this.X > this.Parent.Width)
 			{
-				this.X = this.X - this.Parent.Width - this.Parent.EntityHeight;
+				this.X = this.X - this.Parent.Width - 2*this.Parent.EntityHeight;
 				this.Y = Math.random() * parent.Height;
 			}
 			else if (this.X < -this.Parent.EntityWidth)
 			{
-				this.X = this.X + this.Parent.Width + this.Parent.EntityWidth;
+				this.X = this.X + this.Parent.Width + 2*this.Parent.EntityWidth;
 				this.Y = Math.random() * parent.Height;
 			}
 		}
