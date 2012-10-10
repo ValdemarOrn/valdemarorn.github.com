@@ -98,6 +98,7 @@ $(document).ready(function ()
 	$('#renderHeight').trigger('change');
 	$('#boxWidth').trigger('change');
 	$('#boxHeight').trigger('change');
+	$('#vertical').trigger('change');
 
 });
 
