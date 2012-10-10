@@ -14,7 +14,7 @@ $(document).ready(function ()
 	$('#renderHeight').val(window.innerHeight);
 	$('#boxWidth').val('10');
 	$('#boxHeight').val('1');
-	$('#vertical').prop("checked", true);
+	$('#vertical').prop("checked", false);
 
 	$('#particleCount').change(function ()
 	{
@@ -124,6 +124,11 @@ M.Entity = function (parent)
 				this.Y = this.Y - this.Parent.Height - this.Parent.EntityHeight;
 				this.X = Math.random() * this.Parent.Width;
 			}
+			else if (this.Y < -this.Parent.EntityHeight)
+			{
+				this.Y = this.Y + this.Parent.Height + this.Parent.EntityHeight;
+				this.X = Math.random() * this.Parent.Width;
+			}
 		}
 		else
 		{
@@ -131,6 +136,11 @@ M.Entity = function (parent)
 			if (this.X > this.Parent.Width)
 			{
 				this.X = this.X - this.Parent.Width - this.Parent.EntityHeight;
+				this.Y = Math.random() * parent.Height;
+			}
+			else if (this.X < -this.Parent.EntityWidth)
+			{
+				this.X = this.X + this.Parent.Width + this.Parent.EntityWidth;
 				this.Y = Math.random() * parent.Height;
 			}
 		}
