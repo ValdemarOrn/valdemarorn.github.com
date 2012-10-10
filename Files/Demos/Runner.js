@@ -116,7 +116,7 @@ M.Entity = function (parent)
 	{
 		if (this.Parent.Vertical)
 		{
-			this.Y = this.Y + this.Speed * this.Parent.EntitySpeed * 0.1 / (this.Parent.Height / 1000);
+			this.Y = this.Y + this.Speed * this.Parent.EntitySpeed * 0.1 * (this.Parent.Height / 1000);
 			if (this.Y > this.Parent.Height)
 			{
 				this.Y = this.Y - this.Parent.Height - this.Parent.EntityHeight;
@@ -125,7 +125,7 @@ M.Entity = function (parent)
 		}
 		else
 		{
-			this.X = this.X + this.Speed * this.Parent.EntitySpeed * 0.1 / (this.Parent.Width / 1000);
+			this.X = this.X + this.Speed * this.Parent.EntitySpeed * 0.1 * (this.Parent.Width / 1000);
 			if (this.X > this.Parent.Width)
 			{
 				this.X = this.X - this.Parent.Width - this.Parent.EntityHeight;
