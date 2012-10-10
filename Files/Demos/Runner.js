@@ -1,25 +1,104 @@
 
-// Startup code
-window.onload = function ()
+$(document).ready(function ()
 {
 	var canvas = document.getElementById("c");
 
 	var m = new M.Main(canvas);
 	m.Init();
-
-	/*function resizeEvent()
-	{
-		canvas.width = window.innerWidth - 10;
-		canvas.height = window.innerHeight - 100;
-		m.Width = canvas.width;
-		m.Height = canvas.height;
-	}*/
-
-	//window.onresize = resizeEvent;
-	//resizeEvent();
-
+	M.Instance = m;
 	setInterval(function () { m.Process(); }, 10);
-}
+	
+	$('#particleCount').val('30');
+	$('#speed').val('7');
+	$('#renderWidth').val(window.innerWidth);
+	$('#renderHeight').val(window.innerHeight);
+	$('#boxWidth').val('20');
+	$('#boxHeight').val('2');
+
+	$('#particleCount').change(function ()
+	{
+		var num = Number($(this).val());
+		if (isNaN(num))
+			$(this).val('50');
+		else
+			M.Instance.SetCount(num);
+	});
+
+	$('#speed').change(function ()
+	{
+		var num = Number($(this).val());
+		if (isNaN(num))
+			$(this).val('10');
+		else
+			M.Instance.EntitySpeed = num;
+	});
+
+	$('#renderWidth').change(function ()
+	{
+		var num = Number($(this).val());
+		if (isNaN(num))
+			$(this).val('1400');
+		else
+		{
+			M.Instance.Width = num;
+			M.Instance.Canvas.width = num;
+		}
+	});
+
+	$('#renderHeight').change(function ()
+	{
+		var num = Number($(this).val());
+		if (isNaN(num))
+			$(this).val('900');
+		else
+		{
+			M.Instance.Height = num;
+			M.Instance.Canvas.height = num;
+		}
+	});
+
+	$('#boxWidth').change(function ()
+	{
+		var num = Number($(this).val());
+		if (isNaN(num))
+			$(this).val('25');
+		else
+			M.Instance.EntityWidth = num;
+	});
+
+	$('#boxHeight').change(function ()
+	{
+		var num = Number($(this).val());
+		if (isNaN(num))
+			$(this).val('4');
+		else
+			M.Instance.EntityHeight = num;
+	});
+
+	$('#vertical').change(function ()
+	{
+		var check = $(this).prop("checked");
+		M.Instance.Vertical = check;
+	});
+
+	$('#control').mouseenter(function ()
+	{
+		$(this).animate({ height: 140, opacity: 1.0 }, 1000);
+	});
+
+	$('#control').mouseleave(function ()
+	{
+		$(this).animate({ height: 20, opacity: 0.6 }, 1000);
+	});
+
+	$('#particleCount').trigger('change');
+	$('#speed').trigger('change');
+	$('#renderWidth').trigger('change');
+	$('#renderHeight').trigger('change');
+	$('#boxWidth').trigger('change');
+	$('#boxHeight').trigger('change');
+
+});
 
 // Objects
 
@@ -31,57 +110,53 @@ M.Entity = function (parent)
 	this.X = Math.random() * parent.Width - parent.Width;
 	this.Y = Math.random() * parent.Height;
 	this.Speed = 5 + Math.random() * 20;
-	this.Vertical = false;
-	this.Width = 25;
-	this.Height = 4;
-
 	
 
 	this.Move = function ()
 	{
-	    if (this.Vertical)
-	    {
-	        this.Y = this.Y + this.Speed;
-	        if (this.Y > this.Parent.Height)
-	        {
-	            this.Y = this.Y - this.Parent.Height - this.Height;
-	            this.X = Math.random() * this.Parent.Width;
-	        }
-	    }
-	    else
-	    {
-	        this.X = this.X + this.Speed;
-	        if (this.X > this.Parent.Width)
-	        {
-	            this.X = this.X - this.Parent.Width - this.Width;
-	            this.Y = Math.random() * parent.Height;
-	        }
-	    }
+		if (this.Parent.Vertical)
+		{
+			this.Y = this.Y + this.Speed * this.Parent.EntitySpeed * 0.1 / (this.Parent.Height / 1000);
+			if (this.Y > this.Parent.Height)
+			{
+				this.Y = this.Y - this.Parent.Height - this.Parent.EntityHeight;
+				this.X = Math.random() * this.Parent.Width;
+			}
+		}
+		else
+		{
+			this.X = this.X + this.Speed * this.Parent.EntitySpeed * 0.1 / (this.Parent.Width / 1000);
+			if (this.X > this.Parent.Width)
+			{
+				this.X = this.X - this.Parent.Width - this.Parent.EntityHeight;
+				this.Y = Math.random() * parent.Height;
+			}
+		}
 	}
 
 	this.Process = function (ctx)
 	{
-	    this.Move();
+		this.Move();
 
-	    var hue = this.Parent.ColorIndex + (this.Y / this.Parent.Height) * this.Parent.ColorSpan;
-	    hue = hue % 360;
+		var hue = this.Parent.ColorIndex + (this.Y / this.Parent.Height) * this.Parent.ColorSpan;
+		hue = hue % 360;
 
-	    var rgb = hsvToRgb(hue, 100, 100);
+		var rgb = hsvToRgb(hue, 100, 100);
 
-	    for (var i = 0; i < 1; i++)
-	    {
-	        var p = 1 + i / 2;
-	        p = p * p * this.Speed / 20;
-	        var alpha = Math.exp(-i * 0.1);
-	        var size = Math.exp(-i * 0.02);
+		for (var i = 0; i < 1; i++)
+		{
+			var p = 1 + i / 2;
+			p = p * p * this.Speed / 20;
+			var alpha = Math.exp(-i * 0.1);
+			var size = Math.exp(-i * 0.02);
 
-	        ctx.beginPath();
-	        
-	        ctx.fillStyle = "rgba(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ", " + alpha + ")";
-	        ctx.rect(this.X - p, this.Y, this.Width, this.Height);
+			ctx.beginPath();
+			
+			ctx.fillStyle = "rgba(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ", " + alpha + ")";
+			ctx.rect(this.X - p, this.Y, this.Parent.EntityWidth, this.Parent.EntityHeight);
 
-	        ctx.fill();
-	    }
+			ctx.fill();
+		}
 	}
 }
 
@@ -91,6 +166,11 @@ M.Main = function (canvas)
 	this.Context = canvas.getContext("2d");
 	this.Width = 1900;
 	this.Height = 1000;
+	this.Vertical = false;
+
+	this.EntityWidth = 25;
+	this.EntityHeight = 4;
+	this.EntitySpeed = 10;
 
 	this.ColorIndex = 0;
 	this.ColorSpan = 360 / 2;
@@ -100,12 +180,12 @@ M.Main = function (canvas)
 
 	this.Init = function ()
 	{
-	    for (i = 0; i < this.Entities.length; i++)
-	    {
-	        var e = new M.Entity(this);
+		for (var i = 0; i < this.Entities.length; i++)
+		{
+			var e = new M.Entity(this);
 
-	        this.Entities[i] = e;
-	    }
+			this.Entities[i] = e;
+		}
 
 		this.Canvas.width = this.Width;
 		this.Canvas.height = this.Height;
@@ -125,19 +205,34 @@ M.Main = function (canvas)
 
 		for (i = 0; i < this.Entities.length; i++)
 		{
-		    this.Entities[i].Process(c);
+			this.Entities[i].Process(c);
 		}
 
 		this.ColorIndex++;
 	}
+
+	this.SetCount = function (count)
+	{
+		var oldCount = this.Entities.length;
+		var newArr = new Array(count);
+		var i = 0;
+
+		for (i = 0; i < oldCount && i < count; i++)
+		{
+			newArr[i] = this.Entities[i];
+		}
+
+		while (i < count)
+		{
+			newArr[i] = new M.Entity(this);
+			i++;
+		}
+
+		this.Entities = newArr;
+	}
 }
 
 
-
-Math.diff = function (a, b)
-{
-	return Math.abs(a - b);
-}
 
 /**
 * HSV to RGB color conversion
