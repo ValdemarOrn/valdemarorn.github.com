@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html style="height: 100%; ">
+
+<head>
+
+	<title>Pendulus - Javascript, Canvas, HTML5 Demo</title>
+	<meta name="description" content="HTML5 canvas demo written in Javascript.">
+	<meta name="keywords" content="html5, canvas, javascript, demo">
+	
+	<link href="PendulumStyles.css" rel="stylesheet" type="text/css">
+	<link href="jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css" />
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+
+	<script src="jquery.mousewheel.min.js"></script>
+	<script src="jquery.mCustomScrollbar.js"></script>
+	<script src="BrowserDetect.js"></script>
+
+	<script type="text/javascript" src="Pendulum.js"></script>
+	<script type="text/javascript" src="PendulumControl.js"></script>
+	
+</head>
+
+<body>
+
+	<div id="Menu">
+		<a href="#" id="GetImage">Get Image</a>
+		<a href="#" id="SaveShare">Save & Share</a>
+		<a href="#" id="Instructions">Instructions</a>
+		<a href="#" id="About">About</a>
+	</div>
+
+	<div id="ControlContainer">
+		<div id="Control">
+			<form>
+				<div class="ConfigBlock">
+					<h2>Image Settings</h2>
+					<div><input type="text" id="CanvasWidth" class="Controller" /></div>
+					<div><input type="text" id="CanvasHeight" class="Controller" /></div>
+					<div><input type="text" id="CanvasScale" class="Controller" /></div>
+					<div><input type="text" id="Precision" class="Controller" /></div>
+				</div>
+			
+				<div class="ConfigBlock">
+					<h2>Simulation Length</h2>
+					<div><input type="text" id="StartTime" class="Controller" /></div>
+					<div><input type="text" id="SimulationTime" class="Controller" /></div>
+				</div>
+
+				<div class="ConfigBlock">
+					<h2>Swing</h2>
+					<div><input type="text" id="XSize" class="Controller" /></div>
+					<div><input type="text" id="YSize" class="Controller" /></div>
+					<div><input type="text" id="XSwingPhase" class="Controller" /></div>
+					<div><input type="text" id="YSwingPhase" class="Controller" /></div>
+				</div>
+
+				<div class="ConfigBlock">
+					<h2 class="Settings" id="SwingSpeedEnabled">Swing Speed</h2>
+					<div><input type="text" id="XSwingSpeed" class="Controller" /></div>
+					<div><input type="text" id="YSwingSpeed" class="Controller" /></div>
+				</div>
+
+				<div class="ConfigBlock">
+					<h2 class="Settings" id="SwingModulationEnabled">Swing Modulation</h2>
+					<div><input type="text" id="XModulation" class="Controller" /></div>
+					<div><input type="text" id="YModulation" class="Controller" /></div>
+					<div><input type="text" id="XModulationSpeed" class="Controller" /></div>
+					<div><input type="text" id="YModulationSpeed" class="Controller" /></div>
+					<div><input type="text" id="XModulationPhase" class="Controller" /></div>
+					<div><input type="text" id="YModulationPhase" class="Controller" /></div>
+				</div>
+
+				<div class="ConfigBlock">
+					<h2 class="Settings" id="DecayRateEnabled">Decay Rate</h2>
+					<div><input type="text" id="XDecayRate" class="Controller" /></div>
+					<div><input type="text" id="YDecayRate" class="Controller" /></div>
+				</div>
+
+				<div class="ConfigBlock">
+					<h2 class="Settings" id="RotationEnabled">Rotation</h2>
+					<div><input type="text" id="RotationSpeed" class="Controller" /></div>
+					<div><input type="text" id="RotationPhase" class="Controller" /></div>
+				</div>
+
+				<div class="ConfigBlock">
+					<h2 class="Settings" id="RotationModEnabled">Rotation Modulation</h2>
+					<div><input type="text" id="RotationMod" class="Controller" /></div>
+					<div><input type="text" id="RotationModSpeed" class="Controller" /></div>
+					<div><input type="text" id="RotationModPhase" class="Controller" /></div>
+				</div>
+
+				<div class="ConfigBlock">
+					<h2 class="Settings" id="PlaneAngleEnabled">Plane Tilt</h2>
+					<div><input type="text" id="PlaneAngleX" class="Controller" /></div>
+					<div><input type="text" id="PlaneAngleY" class="Controller" /></div>
+					<div><input type="text" id="PlaneHeight" class="Controller" /></div>
+				</div>
+
+				<div class="ConfigBlock">
+					<h2>Image Position</h2>
+					<div><input type="text" id="PanX" class="Controller" /></div>
+					<div><input type="text" id="PanY" class="Controller" /></div>
+					<div><input type="text" id="Zoom" class="Controller" /></div>
+					<div><input type="text" id="Rotate" class="Controller" /></div>
+				</div>
+
+			
+				<br />
+			</form>
+		</div>
+		<div id="ControlMinimize">˄</div>
+	</div>
+
+	<canvas id="Canvas">
+
+	<div style="display: none;">
+
+		<div class="DialogBlinds"></div>
+
+		<div class="DialogClose"><div class="DialogCloseButton">Close</div></div>
+
+		<!-- Get Image Dialog -->
+		<div id="GetImageDialog" class="Dialog">
+
+			<h1>Download Image</h1>
+
+			<div>
+				<h3>To download high-resolution image:</h3>
+				<ul class="Chrome">
+					<li>Right click the image and choose "Save image as"</li>
+					<li>
+						If "Save As" is disabled or doesn't work, you can 
+						also choose "Copy Image" and pase it into your favorite
+						image editor.
+					</li>
+				</ul>
+				<ul class="IE">
+					<li>Right click the image and choose "Save picture as"</li>
+					<li>
+						If "Save As" is disabled or doesn't work, you can 
+						also choose "Copy" and pase it into your favorite
+						image editor.
+					</li>
+				</ul>
+				<ul class="Firefox">
+					<li>Right click the image and choose "Save image as"</li>
+					<li>
+						If "Save As" is disabled or doesn't work, you can 
+						also choose "Copy Image" and pase it into your favorite
+						image editor.
+					</li>
+				</ul>
+			</div>
+
+			<div style="text-align: center;">
+				<img src="" id="ImageOutput" />
+			</div>
+
+		</div>
+
+		<!-- Save % Share Dialog -->
+		<div id="SaveShareDialog" class="Dialog">
+
+			<h1>Save & Share</h1>
+
+			<div>
+				<h3>Image Url:</h3>
+				<input type="text" id="ImageUrl" style="width: 400px; margin-left: 20px;" /><br />
+				<ul>
+					<li>Use this link to restore your image at any time.</li>
+					<li>You can also send it to your friends on Facebook and Twitter</li>
+				</ul>
+				<div id="ShareFacebook"></div>
+				<div id="ShareTwitter"></div>
+			</div>
+
+		</div>
+
+		<!-- Instructions Dialog -->
+		<div id="InstructionsDialog" class="Dialog">
+
+			<h1>Instructions</h1>
+
+			<div>
+				<h3>Coming soon...</h3>
+			</div>
+
+		</div>
+
+		<!-- About Dialog -->
+		<div id="AboutDialog" class="Dialog">
+
+			<h1>About Wavegrounds</h1>
+
+			<div>
+				<h3>Created by Valdemar Erlingsson</h3>
+				<h3><a href="http://valdemarorn.github.com">My Github Page</a></h3>
+				<h3><a href="mailto:valdiorn@gmail.com">My Email</a></h3>
+				Wavegrounds is free and open source software. You can use it any way you want.
+				The images created by Wavegrounds are your property and you have full permission
+				to do anything you like with them.
+			</div>
+
+		</div>
+
+	</div>
+</body>
+
+</html>
