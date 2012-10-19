@@ -40,10 +40,14 @@
 					<div><input type="text" id="CanvasHeight" class="Controller" /></div>
 					<div><input type="text" id="CanvasScale" class="Controller" /></div>
 					<div><input type="text" id="Precision" class="Controller" /></div>
+					<div><input type="text" id="BackgroundColor" class="Controller" /></div>
+					<div><input type="text" id="LineColor" class="Controller" /></div>
+					<div><input type="text" id="LineOpacity" class="Controller" /></div>
+					<div><input type="text" id="LineThickness" class="Controller" /></div>
 				</div>
 			
 				<div class="ConfigBlock">
-					<h2>Simulation Length</h2>
+					<h2>Simulation Time</h2>
 					<div><input type="text" id="StartTime" class="Controller" /></div>
 					<div><input type="text" id="SimulationTime" class="Controller" /></div>
 				</div>
@@ -63,13 +67,23 @@
 				</div>
 
 				<div class="ConfigBlock">
-					<h2 class="Settings" id="SwingModulationEnabled">Swing Modulation</h2>
-					<div><input type="text" id="XModulation" class="Controller" /></div>
-					<div><input type="text" id="YModulation" class="Controller" /></div>
-					<div><input type="text" id="XModulationSpeed" class="Controller" /></div>
-					<div><input type="text" id="YModulationSpeed" class="Controller" /></div>
-					<div><input type="text" id="XModulationPhase" class="Controller" /></div>
-					<div><input type="text" id="YModulationPhase" class="Controller" /></div>
+					<h2 class="Settings" id="SwingPMEnabled">Phase Modulation</h2>
+					<div><input type="text" id="XPModulation" class="Controller" /></div>
+					<div><input type="text" id="YPModulation" class="Controller" /></div>
+					<div><input type="text" id="XPModulationSpeed" class="Controller" /></div>
+					<div><input type="text" id="YPModulationSpeed" class="Controller" /></div>
+					<div><input type="text" id="XPModulationPhase" class="Controller" /></div>
+					<div><input type="text" id="YPModulationPhase" class="Controller" /></div>
+				</div>
+
+				<div class="ConfigBlock">
+					<h2 class="Settings" id="SwingAMEnabled">Amplitude Modulation</h2>
+					<div><input type="text" id="XAModulation" class="Controller" /></div>
+					<div><input type="text" id="YAModulation" class="Controller" /></div>
+					<div><input type="text" id="XAModulationSpeed" class="Controller" /></div>
+					<div><input type="text" id="YAModulationSpeed" class="Controller" /></div>
+					<div><input type="text" id="XAModulationPhase" class="Controller" /></div>
+					<div><input type="text" id="YAModulationPhase" class="Controller" /></div>
 				</div>
 
 				<div class="ConfigBlock">
@@ -99,6 +113,24 @@
 				</div>
 
 				<div class="ConfigBlock">
+					<h2 class="Settings" id="LineSpeedStyleEnabled">Line Style By Speed</h2>
+					<div><input type="text" id="LineSpeedMin" class="Controller" /></div>
+					<div><input type="text" id="LineSpeedDecay" class="Controller" /></div>
+					<div><input type="text" id="LineSpeedColor" class="Controller" /></div>
+					<div><input type="text" id="LineSpeedOpacity" class="Controller" /></div>
+					<div><input type="text" id="LineSpeedThickness" class="Controller" /></div>
+				</div>
+
+				<div class="ConfigBlock">
+					<h2 class="Settings" id="LineTimeStyleEnabled">Line Style By Time</h2>
+					<div><input type="text" id="LineTimeMin" class="Controller" /></div>
+					<div><input type="text" id="LineTimeDecay" class="Controller" /></div>
+					<div><input type="text" id="LineTimeColor" class="Controller" /></div>
+					<div><input type="text" id="LineTimeOpacity" class="Controller" /></div>
+					<div><input type="text" id="LineTimeThickness" class="Controller" /></div>
+				</div>
+
+				<div class="ConfigBlock">
 					<h2>Image Position</h2>
 					<div><input type="text" id="PanX" class="Controller" /></div>
 					<div><input type="text" id="PanY" class="Controller" /></div>
@@ -115,7 +147,7 @@
 
 	<canvas id="Canvas">
 
-	<div style="display: none;">
+	<div id="DialogContainer" style="display: none;">
 
 		<div class="DialogBlinds"></div>
 
@@ -203,6 +235,22 @@
 				to do anything you like with them.
 			</div>
 
+		</div>
+
+		<!-- Color Picker Dialog -->
+		<div id="ColorPickerDialog" class="Dialog">
+
+			<h1>Color Picker</h1>
+
+			<div style="text-align: center;">
+				<div class="ColorLayout">
+					<div><input type="text" id="ColorPickR" class="Controller" /></div>
+					<div><input type="text" id="ColorPickG" class="Controller" /></div>
+					<div><input type="text" id="ColorPickB" class="Controller" /></div>
+				</div>
+				<br />
+				<div id="Swatch">&nbsp;</div>
+			</div>
 		</div>
 
 	</div>

@@ -15,6 +15,7 @@ $(document).ready(function ()
 
 	var m = new M.Main(canvas);
 	m.Init();
+	//m.Reset();
 	M.Instance = m;
 
 	setInterval(function () { m.Process(); }, 10);
@@ -80,7 +81,7 @@ $(document).ready(function ()
 	// event that occurs when tweaking the sliders
 	function UpdateMouseControl(id, dx, dy)
 	{
-		var val = Number($('#Control #' + id).val());
+		var val = Number($('#' + id).val());
 		var info = M.ConfigInfo[id];
 
 		if(info.type === 'exp' || info.type == 'explimit')
@@ -121,10 +122,14 @@ $(document).ready(function ()
 	{
 		var info = M.ConfigInfo[id];
 		
-		if (val < info.min)
-			val = info.min;
-		else if (val > info.max)
-			val = info.max;
+		if (info.type !== 'color')
+		{
+			val = Number(val);
+			if (val < info.min)
+				val = info.min;
+			else if (val > info.max)
+				val = info.max;
+		}
 
 		if (M.Instance.Config[id] == val && (force !== true))
 			return;
@@ -135,50 +140,75 @@ $(document).ready(function ()
 			var width = (val - info.min) / (info.max - info.min) * 100;
 			width = Math.roundTo(width, 1);
 			width = width.toString() + '%';
-			$('#Control #' + id).parent().find('.bar .indicator').css('width', width);
+			$('#' + id).parent().find('.bar .indicator').css('width', width);
 		}
 		else if (info.type == 'explimit')
 		{
 			var width = Math.log(val+1) / Math.log(info.max+1) * 100;
 			width = Math.roundTo(width, 1);
 			width = width.toString() + '%';
-			$('#Control #' + id).parent().find('.bar .indicator').css('width', width);
+			$('#' + id).parent().find('.bar .indicator').css('width', width);
 		}
 
-		var roundedVal = Math.roundTo(val, info.precision);
-
-		if (round === true)
-			$('#Control #' + id).val(roundedVal);
+		if (info.type === 'color')
+		{
+			$('#' + id).val(val);
+			$('#' + id).parent().find('.ControlColor').css('background-color', val);
+		}
 		else
-			$('#Control #' + id).val(val);
+		{
+			var roundedVal = Math.roundTo(val, info.precision);
+
+			if (round === true)
+				$('#' + id).val(roundedVal);
+			else
+				$('#' + id).val(val);
+		}
 
 		M.Instance.Config[id] = val;
 		M.Instance.Reset();
 		M.Instance.Process();
+
+		if (id.indexOf('ColorPick') >= 0)
+			UpdateColorDialog();
 	}
 
 	// Add controller element and label
 	function addController(elem)
 	{
 		var id = $(elem).prop('id');
-		var label = '<span>' + id + ':</span>';
+		var label = '<span>' + M.Labels[id] + ':</span>';
 		var type = M.ConfigInfo[id].type;
 
-		if(type === 'limit' || type === 'explimit')
+		if (type === 'limit' || type === 'explimit')
 			var ctrl = '<div class="ControlHandle"><div class="bar"><div class="indicator">&nbsp;</div></div></div>';
-		else
+		else if (type === 'lin' || type === 'exp')
 			var ctrl = '<div class="ControlHandle"><div class="spinner">Drag</div></div>';
+		else if (type === 'color')
+			var ctrl = '<div class="ControlColor">&nbsp;</div>';
+		else
+			var ctrl = '';
 
 		$(elem).before(label);
 		$(elem).after(ctrl);
 
-
-		$(elem).parent().find('.ControlHandle').mousedown(function ()
+		if (type === 'color')
 		{
-			activeController = id;
-			$('#Control input').css('-moz-user-select', '-moz-none');
-			$('#Control input').css('-webkit-user-select', 'none');
-		});
+			$(elem).parent().find('.ControlColor').click(function ()
+			{
+				GetColor(id);
+				
+			});
+		}
+		else
+		{
+			$(elem).parent().find('.ControlHandle').mousedown(function ()
+			{
+				activeController = id;
+				$('#Control input').css('-moz-user-select', '-moz-none');
+				$('#Control input').css('-webkit-user-select', 'none');
+			});
+		}
 	}
 
 	// Show or hide the current setting (config block) depending on model state
@@ -213,29 +243,69 @@ $(document).ready(function ()
 	}
 
 	// Show modal dialogs
-	function ShowDialog(dialogId)
+	function ShowDialog(dialogId, onCloseEvent)
 	{
-		var dialog = $('#' + dialogId).clone();
+		var dialog = $('#' + dialogId);
 		dialog.addClass('DialogActive');
 		dialog.appendTo("body");
 
 		var dialogClose = $(".DialogClose").clone();
 		dialogClose.appendTo(dialog);
-
+		
 		var blinds = $(".DialogBlinds").clone();
-		blinds.addClass('DialogActive');
+		blinds.addClass('BlindsActive');
 		blinds.appendTo("body");
 
 		// add close action
 		$(".DialogCloseButton").click(function ()
 		{
-			$("body .DialogActive").remove();
+			$("body .BlindsActive").remove();
+			$("body .DialogActive .DialogClose").remove();
+			$("body .DialogActive").appendTo('#DialogContainer');
+			$(".DialogActive").removeClass('DialogActive');
+
+			if (onCloseEvent !== null)
+				onCloseEvent();
 		});
+	}
+
+	function GetColor(id)
+	{
+		var color = DecomposeColor(M.Instance.Config[id]);
+		setValue('ColorPickR', color[0]);
+		setValue('ColorPickG', color[1]);
+		setValue('ColorPickB', color[2]);
+
+		var callback = function () { setValue(id, GetDialogColor()); };
+		ShowDialog('ColorPickerDialog', callback);
+		
+	}
+
+	function GetDialogColor()
+	{
+		var R = M.Instance.Config.ColorPickR.toString(16);
+		var G = M.Instance.Config.ColorPickG.toString(16);
+		var B = M.Instance.Config.ColorPickB.toString(16);
+
+		if (R.length < 2)
+			R = '0' + R;
+		if (G.length < 2)
+			G = '0' + G;
+		if (B.length < 2)
+			B = '0' + B;
+
+		var str = '#' + R + G + B;
+		return str;
+	}
+
+	function UpdateColorDialog()
+	{
+		$('#Swatch').css('background-color', GetDialogColor());
 	}
 
 	// ----------------------------Control events ----------------------------
 
-	$(document).mouseup(function ()
+	$(window).mouseup(function ()
 	{
 		console.log('mouse up, active was ' + activeController);
 		activeController = null;
@@ -243,7 +313,7 @@ $(document).ready(function ()
 		$('#Control input').css('-webkit-user-select', 'text');
 	});
 
-	$(document).mousemove(function (event)
+	$(window).mousemove(function (event)
 	{
 		if (lastMousePos == null || activeController == null)
 		{
@@ -268,11 +338,12 @@ $(document).ready(function ()
 		state = !state;
 		M.Instance.Settings[id] = state;
 
-
 		ShowHideSettings(id);
+		M.Instance.Reset();
+		M.Instance.Process();
 	});
 
-	$('#Control .Controller').each(function ()
+	$('.Controller').each(function ()
 	{
 		$(this).prop('unselectable', 'on');
 		var id = $(this).prop('id');
@@ -282,7 +353,7 @@ $(document).ready(function ()
 
 		$(this).change(function ()
 		{
-			setValue(id, Number($(this).val()), false);
+			setValue(id, $(this).val(), false);
 		});
 
 		// set default value
@@ -349,6 +420,13 @@ $(document).ready(function ()
 		}
 	});
 
+	/*$('#ColorPickerDialog .ControlHandle').mousedown(function ()
+	{
+		activeController = $(this).prop('id');
+		$('#ColorPickerDialog').css('-moz-user-select', '-moz-none');
+		$('#ColorPickerDialog').css('-webkit-user-select', 'none');
+	});*/
+
 	// Set default size
 	M.Instance.Config.CanvasWidth = Math.roundTo(window.innerWidth * 0.9, 0);
 	M.Instance.Config.CanvasHeight = Math.roundTo(window.innerHeight * 0.85, 0);
@@ -359,8 +437,3 @@ $(document).ready(function ()
 	refreshSettings();
 });
 
-Math.roundTo = function (number, decimalPlaces)
-{
-	var factor = Math.pow(10, decimalPlaces);
-	return Math.round(number * factor) / factor;
-};

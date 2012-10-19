@@ -94,7 +94,7 @@ a:active
 
 	#ControlMinimize
 	{
-		font-size: 16px;
+		font-size: 20px;
 		text-align: center;
 		min-height: 30px;
 		margin: 0px;
@@ -179,22 +179,24 @@ a:active
 	{
 		color: #1ca1ff;
 	}
+
+	.Controller
+	{
+		height: 16px;
+		font-size: 10px;
+		width: 80px;
+		margin-bottom: 4px;
+		background: rgba(0, 0, 0, 0.6);
+		border: 1px solid #333;
+		color: #bbb;
+		padding-left: 2px;
+		border-radius: 5px;
+	}
 }
 
 
 
-.Controller
-{
-	height: 16px;
-	font-size: 10px;
-	width: 80px;
-	margin-bottom: 4px;
-	background: rgba(0, 0, 0, 0.6);
-	border: 1px solid #333;
-	color: #bbb;
-	padding-left: 2px;
-	border-radius: 5px;
-}
+
 
 .ControlHandle 
 {
@@ -242,6 +244,18 @@ a:active
 	}
 }
 
+.ControlColor
+{
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	margin-left: 6px;
+	border: 1px solid #333;
+	border-radius: 3px;
+	background: red;
+	cursor: pointer;
+}
+
 .DialogBlinds
 {
 	z-index: 99;
@@ -269,6 +283,7 @@ a:active
 	-moz-box-shadow: 0px 0px 20px #333;
 	-webkit-box-shadow: 0px 0px 20px #333;
 	box-shadow: 0px 0px 20px #333;
+	.unselectable;
 
 	#ImageOutput
 	{
@@ -285,6 +300,7 @@ a:active
 		text-align: center;
 		cursor: pointer;
 		margin-top: 20px;
+		.unselectable;
 
 		.DialogCloseButton
 		{
@@ -297,25 +313,72 @@ a:active
 			border-radius: 5px;
 			color: #fff;
 			background: #555;
-			background-image: -webkit-linear-gradient(top,  #666 0%, #444 100%);
-			background-image: -o-linear-gradient(top,  #666 0%, #444 100%);
-			background-image: -moz-linear-gradient(top,  #666 0%, #444 100%);
+			background-image: -webkit-linear-gradient(top, #666 0%, #444 100%);
+			background-image: -o-linear-gradient(top, #666 0%, #444 100%);
+			background-image: -moz-linear-gradient(top, #666 0%, #444 100%);
 		}
 
-		.DialogCloseButton:hover
-		{
-			background: #0094ff;
-			background-image: -webkit-linear-gradient(top,  #1b9fff 0%, #0a83db 100%);
-			background-image: -o-linear-gradient(top,  #1b9fff 0%, #0a83db 100%);
-			background-image: -moz-linear-gradient(top,  #1b9fff 0%, #0a83db 100%);
-		}
+			.DialogCloseButton:hover
+			{
+				background: #0094ff;
+				background-image: -webkit-linear-gradient(top, #1b9fff 0%, #0a83db 100%);
+				background-image: -o-linear-gradient(top, #1b9fff 0%, #0a83db 100%);
+				background-image: -moz-linear-gradient(top, #1b9fff 0%, #0a83db 100%);
+			}
 
-		.DialogCloseButton:active
-		{
-			background: #207cbe;
-			background-image: -webkit-linear-gradient(top,  #3594d8 0%, #2a75aa 100%);
-			background-image: -o-linear-gradient(top,  #3594d8 0%, #2a75aa 100%);
-			background-image: -moz-linear-gradient(top,  #3594d8 0%, #2a75aa 100%);
-		}
+			.DialogCloseButton:active
+			{
+				background: #207cbe;
+				background-image: -webkit-linear-gradient(top, #3594d8 0%, #2a75aa 100%);
+				background-image: -o-linear-gradient(top, #3594d8 0%, #2a75aa 100%);
+				background-image: -moz-linear-gradient(top, #3594d8 0%, #2a75aa 100%);
+			}
+	}
+}
+
+#ColorPickerDialog
+{
+	#Swatch
+	{
+		border: 1px solid #333;
+		border-radius: 10px;
+		width: 200px;
+		padding: 10px;
+		display:inline-block;
+		clear: both;
+		
+	}
+
+	.ColorLayout
+	{
+		padding: 10px;
+		width: 250px;
+		margin-bottom: 20px;
+		background: #ccc;
+		border-radius: 10px;
+		display:inline-block;
+		clear: both;
+		.unselectable;
+	}
+
+
+	span
+	{
+		display: inline-block;
+		width: 80px;
+		margin-bottom: 8px;
+		.unselectable;
+	}
+
+	.Controller
+	{
+		display: none;
+		.unselectable;
+	}
+
+	.bar
+	{
+		font-size: 10px;
+		.unselectable;
 	}
 }
