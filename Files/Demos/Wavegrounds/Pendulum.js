@@ -1,9 +1,12 @@
 /// <reference path="jquery-1.7.1.intellisense.js"/>
 /// <reference path="jquery-1.7.1.js" />
 
-// Objects
+// Model
 
-M = {};
+if(typeof M === "undefined")
+	M = {};
+
+M.VersionInfo = '0.8.0';
 
 M.ConfigInfo =
 {
@@ -14,7 +17,6 @@ M.ConfigInfo =
 	LineColor:          { def: "#000000",min: "",            max: "",           type: 'color',      scale: 0,      precision: 0 },
 	LineOpacity:        { def: 200,      min: 0,             max: 255,          type: 'limit',      scale: 1,      precision: 0 },
 	LineThickness:      { def: 0.4,      min: 0.01,          max: 30,           type: 'limit',      scale: 0.05,   precision: 2 },
-	
 	
 	Precision:          { def: 300,      min: 100,           max: 5000,         type: 'limit',      scale: 50,     precision: 0 },
 
@@ -631,13 +633,55 @@ M.Main = function (canvas)
 
 	this.Serialize = function ()
 	{
-		var output = "";
+		var config = '';
 		for (var k in this.Config)
 		{
-			output = output + ',' + this.Config[k].toString();
+			if(M.ConfigInfo[k].type === 'color')
+				var str = this.Config[k].toString();
+			else
+				var str = Math.roundTo(this.Config[k], 5).toString();
+
+			if (str.length > 7)
+				str = str.substring(0, 7);
+
+			config = config + ',' + str;
 		}
 
-		return output.substring(1);
+		config = config.substring(1);
+
+		var settings = '';
+		for (var k in this.Settings)
+		{
+			if (this.Settings[k] === true)
+				settings = settings + 'T';
+			else
+				settings = settings + 'F';
+		}
+
+		return { Config: config, Settings: settings };
+	}
+
+	this.Deserialize = function (version, config, settings)
+	{
+		config = config.split(',');
+
+		var i = 0;
+		for (var k in this.Config)
+		{
+			if (M.ConfigInfo[k].type === 'color')
+				this.Config[k] = config[i];
+			else
+				this.Config[k] = Number(config[i]);
+
+			i++;
+		}
+
+		i = 0;
+		for (var k in this.Settings)
+		{
+			this.Settings[k] = (settings.charAt(i) === 'T') ? true : false;
+			i++;
+		}
 	}
 
 }
