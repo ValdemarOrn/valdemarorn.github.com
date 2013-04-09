@@ -1,12 +1,11 @@
-
 /****************************************************
 
 === About ===
 
-Dæmi um Javascript pattern og virkni.
-Afritaðu hvert dæmi fyrir sig inn í Javascript gluggann á http://jsfiddle.net/ og smelltu á Run.
+Javascript patterns and behavior demos.
+Copy each example into the Javascript window at http://jsfiddle.net/ and press "Run".
 
-=== Tenglar og upplýsingar ===
+=== Links and sources ===
 
 JavaScript: The World's Most Misunderstood Programming Language
 http://javascript.crockford.com/javascript.html
