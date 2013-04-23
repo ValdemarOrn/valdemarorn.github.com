@@ -1,4 +1,3 @@
-
 # Javascript Coding Standard - Work in progress
 
 ## A. Style
@@ -72,7 +71,7 @@ Always place opening braces for statement blocks on the same line as the conditi
 	
 ### A.12
 
-Use camelCase for function names, variables and properties. Use PascalCase ony for constructor functions.
+Use camelCase for function names, variables and properties. Use PascalCase for constructor functions and namespace objects.
 
 - Reason: Makes it obvious which functions are constructors functions.
 
