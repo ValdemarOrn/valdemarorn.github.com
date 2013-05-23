@@ -56,8 +56,8 @@ obj.show = alarm;
 obj.show();
 
 
-// Gullna reglan: "this" bendir á hlutinn sem er vinstra megin við punktinn. 
-// ef enginn punktur er notaður þá er hluturinn "window".
+// General rule: "this" points to whatever is to the left of the *dot*. 
+// If you're not calling object.method(), then the object is the "window".
 
 
 
@@ -91,7 +91,7 @@ obj2.method();
 
 (function(){
 
-  // This code only exists within this function, and the function doesn't have a name
+	// This code only exists within this function, and the function doesn't have a name
 	alert('this code runs immediately');
 	
 	function f(x) {
@@ -174,7 +174,7 @@ function myObject() {
 }
 
 var obj4 = new myObject(); // myObject isn't a class!! it's a contructor function!
-							// The new keyword creates an empty object and feeds it to the constructor
+                           // The new keyword creates an empty object and feeds it to the constructor
 obj4.method();
 
 
@@ -187,24 +187,24 @@ function myObject() {
 }
 
 var obj5 = {};
-myObject.apply(obj5); // Apply er notað til að "beita aðgerð" á ákveðið object
-obj5.value = 'G';
+myObject.apply(obj5); // Apply is used to invoke a function *on* an object.
+obj5.value = 'G';     // When the function runs, "this" because whatever you applied to function to.
 obj5.method();
 
-// Point: Það eru engir klasar, bara object og constructors
+// Point: there are no classes, just objects and constructors
 
 
 // ------------------------- Example 9 - Monkey patching -------------------------
 
-// Það eru engir klasar í javascript og öll object eru í raun bara dictionaries sem geta innihaldið functions
-// það er ekkert sem kemur í veg fyrir að þú bætir hlutum í dictionary:
+// There are no classes in javascript and all objects really are just dictionaries that may contain functions.
+// There is nothing stopping you from adding more stuff into that dictionary...
 Math.myfunc = function(x){ return 2*Math.abs(x); }
 Math["otherfunc"] = function(x){ return 10*x*x; }
 
 alert(Math.myfunc(4));
 alert(Math.otherfunc(5));
 
-// ... þetta er ekki góð hugmynd!
+// ... but it's not a very good idea.
 
 
 // ------------------------- Example 10 - Prototypes -------------------------
