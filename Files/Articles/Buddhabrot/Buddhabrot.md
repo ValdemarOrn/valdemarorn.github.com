@@ -1,16 +1,16 @@
 # The Buddhabrot in C\# #
 
 ### Combined RGB
-[![Brot - Combined](tn-brot-combined.png)](tn-brot-combined.png)
+[![Brot - Combined](tn-brot-combined.png)](brot-combined.png)
 
 ### 20 Iterations
-[![Brot - Combined](tn-brotx20.png)](tn-brotx20.png)
+[![Brot - Combined](tn-brotx20.png)](brotx20.png)
 
 ### 100 Iterations
-[![Brot - Combined](tn-brotx100.png)](tn-brotx100.png)
+[![Brot - Combined](tn-brotx100.png)](brotx100.png)
 
 ### 1000 Iterations
-[![Brot - Combined](tn-brotx1000.png)](tn-brotx1000.png)
+[![Brot - Combined](tn-brotx1000.png)](brotx1000.png)
 
 # The Code
 
