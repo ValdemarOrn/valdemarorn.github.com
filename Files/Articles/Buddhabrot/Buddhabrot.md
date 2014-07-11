@@ -1,7 +1,10 @@
 # The Buddhabrot in C\# #
 
-### Combined RGB
+### RGB Composite
 [![Brot - Combined](tn-brot-combined.png)](brot-combined.png)
+
+### Another Composite
+[![Brot - Combined](tn-brotx-composite2.png)](brotx-composite2.png)
 
 ### 20 Iterations
 [![Brot - Combined](tn-brotx20.png)](brotx20.png)
