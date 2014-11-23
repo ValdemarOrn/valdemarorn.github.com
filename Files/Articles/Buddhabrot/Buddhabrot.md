@@ -1,5 +1,8 @@
 # The Buddhabrot in C\# #
 
+### Wallpaper
+[![Brot - RGB Composite](Buddhabrot-wallpaper.png)](Buddhabrot-wallpaper.png)
+
 ### RGB Composite
 [![Brot - Combined](tn-brot-combined.png)](brot-combined.png)
 
@@ -19,14 +22,12 @@
 
 ```C#
 	using System;
-	using System.Collections.Generic;
 	using System.Drawing;
 	using System.Drawing.Imaging;
 	using System.Globalization;
 	using System.Linq;
 	using System.Numerics;
-	using System.Text;
-	using System.Threading;
+	using System.Runtime.InteropServices;
 	using System.Threading.Tasks;
 
 	namespace Buddhabrot
@@ -37,17 +38,18 @@
 
 			static void Main(string[] args)
 			{
+				if (args.Length == 0)
+					args = "-file c:\\brot.bmp -w 1080 -h 1980 -it 5000 -xmin -2.0 -xmax 1.1".Split();
+
 				var file = Get<string>("file", args);
 				var width = Get<int?>("w", args) ?? 1000;
-				var height = Get<int?>("h", args) ?? 600;
+				var height = Get<int?>("h", args) ?? 1000;
 				var iter = Get<int?>("it", args) ?? 100;
-				var log = Get<bool?>("log", args) ?? false;
 				var xmin = Get<double?>("xmin", args) ?? -2;
 				var xmax = Get<double?>("xmax", args) ?? 2;
 
-				var brot = new Brot(file, width, height, xmin, xmax, iter, log);
+				var brot = new Brot(file, width, height, xmin, xmax, iter);
 				Task.Run(() => brot.UpdateImage());
-
 				Console.WriteLine("Press Enter to Stop");
 				Console.ReadLine();
 			}
@@ -87,14 +89,11 @@
 
 			#endregion
 
-			private const double EscapeThreshold = 4.0;
-
 			private readonly int threadCount;
 			private readonly string file;
 			private readonly int width;
 			private readonly int height;
 			private readonly int iterations;
-			private readonly bool logarithmic;
 			private readonly double[][] arrays;
 			private readonly Random[] randomGenerators;
 
@@ -106,7 +105,10 @@
 			private readonly double xSize;
 			private readonly double ySize;
 
-			public Brot(string file, int width, int height, double xMin, double xMax, int iterations, bool logarithmic)
+			private readonly double nxFactor;
+			private readonly double nyFactor;
+
+			public Brot(string file, int width, int height, double xMin, double xMax, int iterations)
 			{
 				var aspectRatio = width / (double)height;
 				threadCount = Environment.ProcessorCount;
@@ -114,7 +116,6 @@
 				this.width = width;
 				this.height = height;
 				this.iterations = iterations;
-				this.logarithmic = logarithmic;
 
 				this.xMin = xMin;
 				this.xMax = xMax;
@@ -126,6 +127,9 @@
 
 				arrays = new double[threadCount][];
 				randomGenerators = new Random[threadCount];
+
+				nxFactor = 1 / xSize * width;
+				nyFactor = 1 / ySize * height;
 
 				for (int i = 0; i < threadCount; i++)
 				{
@@ -143,10 +147,10 @@
 				{
 					Parallel.For(0, threadCount, thread => Run(thread, iter));
 					samples += iter * threadCount;
-					if ((DateTime.Now - time).TotalSeconds >= 3.0)
+					if ((DateTime.Now - time).TotalSeconds >= 5.0)
 					{
 						Console.WriteLine("Calculated {0:0.0} Million samples", samples / 1000000.0);
-						SaveImage(file);
+						SaveImage(file, true);
 						time = DateTime.Now;
 					}
 				}
@@ -165,27 +169,39 @@
 					var x = rand.NextDouble() * 8 - 4;
 					var y = rand.NextDouble() * 8 - 4;
 
-					var z = new Complex(0, 0);
-					var c = new Complex(x, y);
+					var zr = 0.0;
+					var zi = 0.0;
+					var cr = x;
+					var ci = y;
 
 					// check for escape
 					for (var i = 0; i < iterations; i++)
 					{
-						z = (z * z) + c;
-						if (z.Magnitude > EscapeThreshold)
+						var zzr = zr * zr - zi * zi;
+						var zzi = zr * zi + zi * zr;
+						zr = zzr + cr;
+						zi = zzi + ci;
+
+						if ((zr * zr + zi * zi) > 4)
 							break;
 					}
 
-					if (z.Magnitude > EscapeThreshold) // did escape
+					if ((zr * zr + zi * zi) > 4) // did escape
 					{
-						z = 0;
+						zr = 0;
+						zi = 0;
 						for (var i = 0; i < iterations; i++)
 						{
-							z = (z * z) + c;
-							if (z.Magnitude > 4)
+							var zzr = zr * zr - zi * zi;
+							var zzi = zr * zi + zi * zr;
+							zr = zzr + cr;
+							zi = zzi + ci;
+
+							if ((zr * zr + zi * zi) > 14)
 								break;
 
-							IncreasePixel(arr, z.Real, z.Imaginary);
+							IncreasePixel(arr, zr, zi);
+							IncreasePixel(arr, zr, -zi);
 						}
 					}
 				}
@@ -198,44 +214,62 @@
 				if (y > yMax || y < yMin)
 					return;
 
-				var nx = (int)((x - xMin) / xSize * width);
-				var ny = (int)((y - yMin) / ySize * height);
+				var nx = (int)((x - xMin) * nxFactor);
+				var ny = (int)((y - yMin) * nyFactor);
 				var idx = nx + ny * width;
-				arr[idx] = arr[idx] + 1;
+				arr[idx]++;
 			}
 
-			public void SaveImage(string filename)
+			public void SaveImage(string filename, bool combine)
 			{
-				var totalMatrix = new double[width * height];
-				for (var i = 0; i < arrays[0].Length; i++)
+				double[] totalMatrix;
+
+				if (combine)
 				{
-					totalMatrix[i] = arrays.Sum(x => x[i]);
-					if (logarithmic)
-						totalMatrix[i] = Math.Log(1 + totalMatrix[i]);
+					totalMatrix = new double[width * height];
+					Parallel.For(0, arrays[0].Length, i =>
+					{
+						totalMatrix[i] = arrays.Sum(x => x[i]);
+					});
+				}
+				else
+				{
+					totalMatrix = arrays[0];
 				}
 
-				var min = totalMatrix.Min();
-				var max = totalMatrix.Max() + 0.0001;
+				var values = totalMatrix.OrderBy(x => x).ToArray();
+				var limit = values[(int)(values.Length * 0.99995)];
+
 				var ch = 3;
 				var imageData = new byte[width * height * ch];
 				for (int y = 0; y < height; y++)
 				{
-					for (var x = 0; x < width; x++)
+					Parallel.For(0, width, x =>
 					{
-						var val = (totalMatrix[x + y * width] - min) / (max - min);
+						var val = totalMatrix[x + y * width] / limit * 256;
+						if (val > 255)
+							val = 255;
 
-						imageData[3 * (x + y * width) + 0] = (byte)(256 * val);
-						imageData[3 * (x + y * width) + 1] = (byte)(256 * val);
-						imageData[3 * (x + y * width) + 2] = (byte)(256 * val);
-					}
+						imageData[3 * (x + y * width) + 0] = (byte)(val);
+						imageData[3 * (x + y * width) + 1] = (byte)(val);
+						imageData[3 * (x + y * width) + 2] = (byte)(val);
+					});
 				}
 
 				var bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb);
 				var bmData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, bitmap.PixelFormat);
 				var pNative = bmData.Scan0;
-				System.Runtime.InteropServices.Marshal.Copy(imageData, 0, pNative, width * height * ch);
+				Marshal.Copy(imageData, 0, pNative, width * height * ch);
 				bitmap.UnlockBits(bmData);
 				bitmap.Save(filename);
+			}
+		}
+
+		static class Ext
+		{
+			public static Complex Conjugate(this Complex val)
+			{
+				return new Complex(val.Real, -val.Imaginary);
 			}
 		}
 	}
