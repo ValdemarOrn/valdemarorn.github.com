@@ -1,12 +1,11 @@
 # The Buddhabrot in C\# #
 
-### Wallpaper
-[![Brot - RGB Composite](Buddhabrot-wallpaper.png)](Buddhabrot-wallpaper.png)
+### RGB Composites
 
-### RGB Composite
+[![Brot - RGB Composite](tn-Buddhabrot-wallpaper.png)](Buddhabrot-wallpaper.png)
+
 [![Brot - Combined](tn-brot-combined.png)](brot-combined.png)
 
-### Another Composite
 [![Brot - Combined](tn-brotx-composite2.png)](brotx-composite2.png)
 
 ### 20 Iterations
