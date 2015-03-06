@@ -3,7 +3,8 @@
         <canvas id="canvas" width="400" height="400" style="border: 1px solid black;"></canvas><br/>
         Iteration: <input type="text" id="iteration" /><br/>
         Total Distance: <input type="text" id="distance" /><br />
-        Temperature: <input type="text" id="temperature" /><br />
+        Temperature: <input type="text" id="temperature" /><br /><br />
+        <a href="#" onClick="heatUp();">Heat it up!</a>
 
         <script>
             var canvas = document.getElementById("canvas");
@@ -21,6 +22,12 @@
                 for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
                 return o;
             };
+
+            function heatUp() {
+                currentTemp *= 5;
+                if (currentTemp > 30)
+                    currentTemp = 30;
+            }
 
             function init() {
                 var ox = width / 10 / 2;
