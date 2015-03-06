@@ -1,0 +1,141 @@
+<html>
+    <body>
+        <canvas id="canvas" width="400" height="400" style="border: 1px solid black;"></canvas><br/>
+        Iteration: <input type="text" id="iteration" /><br/>
+        Total Distance: <input type="text" id="distance" /><br />
+        Temperature: <input type="text" id="temperature" /><br />
+
+        <script>
+            var canvas = document.getElementById("canvas");
+            var ctx = canvas.getContext("2d");
+            var width = canvas.width;
+            var height = canvas.height;
+
+            var points = [];
+            var currentRoute = [];
+            var currentTemp = 30;
+            var currentDistance = 99999;
+            var iteration = 0;
+
+            function shuffle(o) {
+                for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+                return o;
+            };
+
+            function init() {
+                var ox = width / 10 / 2;
+                var oy = height / 10 / 2;
+
+                for (var i = 0; i < 100; i++) {
+                    var point = { x: width / 2, y: height / 2 };
+                    point.x += width / 2 * Math.cos(i / 5) * Math.exp(-i / 80) - 20;
+                    point.y += height / 2 * Math.sin(i / 5) * Math.exp(-i / 80) - 20;
+
+                    points[i] = point;
+                    currentRoute[i] = i;
+                }
+
+                shuffle(currentRoute);
+            }
+
+            function drawBase() {
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0, width, height);
+                ctx.fillStyle = "Red";
+
+                for (var i = 0; i < points.length; i++) {
+                    var point = points[i];
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+            }
+
+            function drawRoute() {
+                ctx.lineWidth = 1.0;
+                ctx.strokeStyle = "Black";
+                for (var i = 0; i < points.length - 1; i++) {
+                    var a = points[currentRoute[i]];
+                    var b = points[currentRoute[i + 1]];
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+            }
+
+            function getDistance(route) {
+                var total = 0.0;
+                for (var i = 0; i < route.length - 1; i++) {
+                    var a = points[route[i]];
+                    var b = points[route[i + 1]];
+                    var dist = (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
+                    total += Math.sqrt(dist);
+                }
+
+                return total;
+            }
+
+            function permutate(route) {
+                var copy = [];
+                for (var i = 0; i < route.length; i++)
+                    copy[i] = route[i];
+                route = copy;
+
+                var idx1 = Math.random() * route.length;
+                var item1 = route.splice(idx1, 1)[0];
+
+                var idx2 = Math.random() * route.length;
+                var item2 = route.splice(idx2, 1)[0];
+
+                var idx3 = Math.random() * (route.length + 1);
+                route.splice(idx3, 0, item1);
+
+                var idx4 = Math.random() * (route.length + 1);
+                route.splice(idx4, 0, item2);
+
+                return route;
+            }
+
+            function acceptance(oldScore, newScore) {
+                var value = (oldScore - newScore) / currentTemp;
+                if (value > 0) return 1.0;
+                return Math.exp(value);
+            }
+            
+            function update() {
+
+                drawBase();
+                drawRoute();
+                document.getElementById("distance").value = currentDistance.toFixed(6);
+                document.getElementById("iteration").value = iteration;
+                document.getElementById("temperature").value = currentTemp;
+
+                var i = 1000;
+                while (i-- > 0) {
+
+                    var newRoute = permutate(currentRoute);
+
+                    var newDist = getDistance(newRoute);
+                    var accept = Math.random() < acceptance(currentDistance, newDist);
+                    currentTemp *= 0.99999;
+                    if (accept) {
+                        currentRoute = newRoute;
+                        currentDistance = newDist;
+                        
+                    }
+
+                    iteration++;
+                }
+
+                setTimeout(update, 20);
+            }
+
+            init();
+            currentDistance = getDistance(currentRoute);
+            update();
+
+
+        </script>
+    </body>
+</html>
