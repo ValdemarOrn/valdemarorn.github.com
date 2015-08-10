@@ -1,0 +1,51 @@
+﻿
+#header {
+    background-color: @BackgroundColor;
+    background-image: url('../Content/banner.jpg');
+    background-size: 160%;
+    background-position-y: 20%;
+    background-position-x: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    padding-bottom: 20%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    .SmoothText
+}
+
+#header-text {
+    position: absolute;
+    transform: translateY(-50%);
+    top: 50%;
+    width: 100%;
+    display: table-cell; 
+    vertical-align: middle; 
+    text-align: center; 
+    font-size: 30pt;
+    letter-spacing: 7px;
+    transition: text-shadow 1s;
+
+    &:hover{
+        text-shadow: 0 0 24px #ffffff;
+        transition: text-shadow 1s;
+    }
+}
+
+
+#header-menu {
+    position: absolute;
+    right: 40px;
+    top: 15px;
+    font-size: 10pt;
+    text-transform: uppercase;
+    letter-spacing: 2pt;
+    .menuStyle;
+    .SmoothText;
+ 
+    a { color: white; }
+
+    li:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+}

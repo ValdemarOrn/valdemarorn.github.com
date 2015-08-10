@@ -1,7 +1,9 @@
+﻿@model SiteGen.Page
+
 <html>
 <head>
     <link href="Templates/styles.css" rel="stylesheet" type="text/css">
-    <title>Valdemar Erlingsson - Valdemar Erlingsson</title>
+    <title>@Model.SiteData.WindowPrefix - @(!string.IsNullOrEmpty(Model.WindowTitle) ? Model.WindowTitle : Model.Title)</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">
@@ -28,49 +30,44 @@
 <body>
     <div id="header">
         <div id="header-text">
-            Valdemar Erlingsson
+            @Model.WindowTitle
         </div>
     </div>
 
     <div id="header-menu">
         <ul>
-            <li><a href="Index.html">About</a></li>
-            <li><a href="Article-Index.html">Articles</a></li>
-            <li><a href="Projects.html">Projects</a></li>
+            @foreach (var item in Model.SiteData.Menu)
+            {
+            <li><a href="@item.Url">@item.Caption</a></li>
+            }
         </ul>
     </div>
 
     <div class="content-main">
-            <h1>Valdemar Erlingsson</h1>
+        @if (!string.IsNullOrEmpty(Model.Title))
+        {
+            <h1>@Model.Title</h1>
+        }
         
+        @if (Model.Date.HasValue)
+        {
+            <div class="date-container">@Model.Date.GetValueOrDefault().ToString("MMM dd. yyyy")</div>
+        }
 
         <div class="article-main">
-            <h2>About Me</h2>
-
-<ul>
-<li><a href="Reading-List.html">My Reading List</a></li>
-<li><a href="mailto:valdiorn@gmail.com">Send me an E-mail</a></li>
-</ul>
-
-<h2>Social Media</h2>
-
-<ul>
-<li><a href="https://github.com/ValdemarOrn">My Github</a></li>
-<li><a href="http://careers.stackoverflow.com/valdemar">Me on Careers 2.0</a></li>
-<li><a href="http://www.soundcloud.com/lowprofilemusic">My Music on Soundcloud</a></li>
-</ul>
-
+            @Raw(Model.HtmlContent)
         </div>
 
     </div>
 
     <div class="footer">
         <div>
-            <p>Valdemar Erlingsson</p>
+            <p>@Model.SiteData.FooterText</p>
             <ul>
-                    <li><a href="Index.html">About</a></li>
-                    <li><a href="Article-Index.html">Articles</a></li>
-                    <li><a href="Projects.html">Projects</a></li>
+                @foreach (var item in Model.SiteData.Menu)
+                {
+                    <li><a href="@item.Url">@item.Caption</a></li>
+                }
             </ul>
         </div>
     </div>

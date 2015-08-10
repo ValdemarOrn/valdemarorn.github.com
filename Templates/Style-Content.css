@@ -1,0 +1,16 @@
+﻿.content-main {
+  margin: 40px 20%;
+  font-family: 'Droid Serif';
+}
+.content-main .article-main {
+  margin-top: 40px;
+}
+.content-main .article-main p {
+  line-height: 20pt;
+}
+.content-main code {
+  background: #ddd;
+  border-radius: 10px;
+  padding: 15pt;
+}
+/*# sourceMappingURL=Style-Content.css.map */

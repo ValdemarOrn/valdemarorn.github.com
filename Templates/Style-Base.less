@@ -1,0 +1,74 @@
+﻿@BackgroundColor: #101B2F;
+@HeaderColor: #2f3b58;
+@HeaderColor2: #374564;
+@textColor: #444;
+@linkColor: #415a96;
+@hoverColor: #698ce0;
+
+@import url(http://fonts.googleapis.com/css?family=Abel|Open+Sans:400,700,400italic,600,600italic,300|Droid+Serif:400,700,400italic,700italic);
+
+.SmoothText {
+    color: white;
+    font-weight: 300;
+    text-shadow: 0 0 6px #ffffff;
+}
+
+.menuStyle {
+    ul {
+        list-style: none;
+        font-weight: 400;
+        margin: 0;
+        display: inline-block;
+        padding: 0;
+        
+        a { font-weight: 400; }
+
+        li {
+            display: inline-block;
+            padding: 4px 10px;
+            margin: 4px;
+            border-radius: 5px;
+            transition: background-color 0.5s;
+        }   
+        li:hover{
+            transition: background-color 0.5s;
+        }
+    }
+}
+
+body {
+    font-family: 'Open Sans';
+    padding: 0;
+    margin: 0;
+    background: #eee;
+    color: @textColor;
+    padding-top: 20%;
+    padding-bottom: 50px;
+}
+
+a {
+    text-decoration: none;
+    font-weight: 600;
+    color: @linkColor;
+
+    &:hover {
+        color: @hoverColor;
+    }
+}
+
+h1, h2, h3 {
+    font-weight: 600;
+    font-family: 'Open Sans';
+    color: @HeaderColor;
+}
+
+h1 { 
+    color: @HeaderColor; 
+}
+
+h2, h3 { 
+    color: @HeaderColor2; 
+    margin-bottom: 10pt; 
+    margin-top: 20pt;
+}
+

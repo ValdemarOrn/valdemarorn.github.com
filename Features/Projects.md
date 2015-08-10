@@ -1,0 +1,91 @@
+<!--
+{ 
+    "Id": "Projects",
+    "WindowTitle": "Projects"
+}
+-->
+
+# Side Projects
+
+## Vladivostok Chess Engine
+
+A fully functional UCI-compliant chess engine for Windows and Linux (x64 only) written in C/C++/C#/Assembly
+
+**Technology used:** *C, C++, C#, Assembly*
+
+[Source code on Github](https://github.com/ValdemarOrn/Chess)
+
+## Sharp Sound Device
+
+VST Plugin Collection built with C# and .NET
+
+**Technology used:** *C#, C++/CLI, Steinberg VST SDK*
+
+[Source code, release and documentation available on Github](https://github.com/ValdemarOrn/SharpSoundDevice)
+
+## CloudSeed Algorithmic Reverb
+
+CloudSeed is an algorithmic reverb plugin built in C# and C++ for emulating huge, endless spaces and modulating echoes, in the spirit of classic studio reverb units like the Lexicon 224.
+
+**Technology used:** *C#, C++, WPF, Steinberg VST SDK*
+
+[Alpha version available](https://github.com/ValdemarOrn/CloudSeed)
+
+## Wavegrounds
+
+Wavegrounds is a Javscript application for generating art from mathematical functions.
+
+**Technology used:** *Javascript, jQuery*
+
+[Wavegrounds](http://wavegrounds.analogwindow.com/)
+
+## Just Play Chess (beta)
+
+Just Play chess is the easiest way to play a game of chess with a friend. The site is a single-purpose site for setting up a simple game of chess and playing remotely. Designed to fit both mobile and desktop screens
+
+**Technology used:** *C#, ASP.NET, Javascript, jQuery, SignalR, WebSockets, Responsive Design*
+
+[justplaychess.analogwindow.com](http://justplaychess.analogwindow.com/)
+
+## KickBrain
+
+Electronic Drum Module based on a PIC18F microcontroller with control software for Windows.
+
+**Technology used:** *C#, WinForms, Microchip C, RS232, Proteus ISIS for PCB and circuit design*
+
+[KickBrain on Github](https://github.com/ValdemarOrn/KickBrain)
+
+## Guitar Exercises
+
+A library of guitar exercises, typeset in html form
+
+[Download a free copy from Github](https://github.com/ValdemarOrn/GuitarExercises)
+
+<br/>
+<br/>
+
+# Javascript Demos
+
+## Conway's Game of Life
+
+**Technology used:** *Javascript, Html Canvas*
+
+[Conway's Game of Life, written in Javascript.](http://jsdemos.analogwindow.com/GameOfLife)
+
+## Phong HTML Game
+
+**Technology used:** *Javascript, Html Canvas*
+
+[Pong clone written in HTML5/Javascript/Canvas.](http://jsdemos.analogwindow.com/Phong)
+
+## Mystiq
+
+**Technology used:** *Javascript, Html Canvas*
+
+[HTML5 / Javascript / Canvas graphics demo.](http://jsdemos.analogwindow.com/Mystiq)
+
+## Runner
+
+**Technology used:** *Javascript, Html Canvas*
+
+[HTML5 / Javascript / Canvas graphics demo.](http://jsdemos.analogwindow.com/Runner)

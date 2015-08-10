@@ -1,7 +1,7 @@
 <html>
 <head>
     <link href="Templates/styles.css" rel="stylesheet" type="text/css">
-    <title>Valdemar Erlingsson - Valdemar Erlingsson</title>
+    <title>Valdemar Erlingsson - Just how read-only is &quot;readonly&quot; in C#?</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">
@@ -28,7 +28,7 @@
 <body>
     <div id="header">
         <div id="header-text">
-            Valdemar Erlingsson
+            
         </div>
     </div>
 
@@ -41,24 +41,39 @@
     </div>
 
     <div class="content-main">
-            <h1>Valdemar Erlingsson</h1>
+            <h1>Just how read-only is &quot;readonly&quot; in C#?</h1>
         
+            <div class="date-container">Jul 04. 2013</div>
 
         <div class="article-main">
-            <h2>About Me</h2>
+            <p>Have you ever stopped to think how the readonly keyword works under the hood? Did you realize that it's only syntactic sugar to stop you from accidentally overwriting an invariant constant?</p>
 
-<ul>
-<li><a href="Reading-List.html">My Reading List</a></li>
-<li><a href="mailto:valdiorn@gmail.com">Send me an E-mail</a></li>
-</ul>
+<p>Don't believe me? Try it yourself:</p>
 
-<h2>Social Media</h2>
+<pre><code>class Program
+{
+    public readonly int Val;
 
-<ul>
-<li><a href="https://github.com/ValdemarOrn">My Github</a></li>
-<li><a href="http://careers.stackoverflow.com/valdemar">Me on Careers 2.0</a></li>
-<li><a href="http://www.soundcloud.com/lowprofilemusic">My Music on Soundcloud</a></li>
-</ul>
+    public Program()
+    {
+        Val = 42;
+    }
+
+    static void Main(string[] args)
+    {
+        var p = new Program();
+        var now = p.Val;
+
+        // This is a compile-time error
+        p.Val = 45; // try commenting out this line, see what happens...
+
+        // But this works just fine
+        p.GetType().GetField("Val").SetValue(p, 43);
+        var after = p.Val;
+        Console.WriteLine("Val is {0}", p.Val);
+    }
+}
+</code></pre>
 
         </div>
 

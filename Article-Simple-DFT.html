@@ -1,0 +1,167 @@
+<html>
+<head>
+    <link href="Templates/styles.css" rel="stylesheet" type="text/css">
+    <title>Valdemar Erlingsson - A very simple Discrete Fourier Transform implemented in C#</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Parallax Header -->
+    <script type="text/javascript">
+        window.addEventListener("scroll", function (a, b) {
+            var header = document.getElementById("header");
+            var headerHeight = header.clientHeight;
+            var scr = document.body.scrollTop;
+            var ratio = scr / headerHeight;
+            var minPos = 0.2;
+            var newPos = minPos + ratio;
+            if (newPos > 1) newPos = 1;
+            var val = (newPos * 100) + '%';
+            header.style["background-position-y"] = val;
+            header.style["top"] = (0.1 * scr) + "px";
+        });
+    </script>
+</head>
+
+<body>
+    <div id="header">
+        <div id="header-text">
+            
+        </div>
+    </div>
+
+    <div id="header-menu">
+        <ul>
+            <li><a href="Index.html">About</a></li>
+            <li><a href="Article-Index.html">Articles</a></li>
+            <li><a href="Projects.html">Projects</a></li>
+        </ul>
+    </div>
+
+    <div class="content-main">
+            <h1>A very simple Discrete Fourier Transform implemented in C#</h1>
+        
+            <div class="date-container">Jun 04. 2013</div>
+
+        <div class="article-main">
+            <p>While I wouldn't recommend this for your production code, it was a fun exercise to refresh my memory on how the DFT actually works.</p>
+
+<p>I later built an FFT implementation in both C# and C++, which you can <a href="https://github.com/ValdemarOrn/LowProfile.FFT">find on my Github</a>.</p>
+
+<pre><code>using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace SimpleDFT
+{
+    class SimpleDFT
+    {
+        static void Main(string[] args)
+        {
+            var s = new double[1024];
+            for(int i=0; i&lt;s.Length; i++)
+                s[i] = Math.Cos(2 * Math.PI * 1 / 1024 * i);
+
+            var d = DFT(s);
+
+            double normalizer = 1.0 / s.Length * 2;
+            for (int i = 0; i &lt; d.Item1.Length; i++)
+            {
+                d.Item1[i] = d.Item1[i] * normalizer;
+                d.Item2[i] = d.Item2[i] * normalizer;
+            }
+
+            var output = IDFT(d.Item1, d.Item2);
+        }
+
+        /// &lt;summary&gt;
+        /// Provides the Discrete Fourier Transform for a real-valued input signal
+        /// &lt;/summary&gt;
+        /// &lt;param name="input"&gt;the signal to transform&lt;/param&gt;
+        /// &lt;param name="partials"&gt;the maximum number of partials to calculate. If not value is given it defaults to input/2&lt;/param&gt;
+        /// &lt;returns&gt;The Cos and Sin components of the signal, respectively&lt;/returns&gt;
+        public static Tuple&lt;double[], double[]&gt; DFT(double[] input, int partials = 0)
+        {
+            int len = input.Length;
+            double[] cosDFT = new double[len / 2 + 1];
+            double[] sinDFT = new double[len / 2 + 1];
+
+            if (partials == 0)
+                partials = len / 2;
+
+            for (int n = 0; n &lt;= partials ; n++)
+            {
+                double cos = 0.0;
+                double sin = 0.0;
+
+                for (int i = 0; i &lt; len; i++)
+                {
+                    cos += input[i] * Math.Cos(2 * Math.PI * n / len * i);
+                    sin += input[i] * Math.Sin(2 * Math.PI * n / len * i);
+                }
+
+                cosDFT[n] = cos;
+                sinDFT[n] = sin;
+            }
+
+            return new Tuple&lt;double[], double[]&gt;(cosDFT, sinDFT);
+        }
+
+        /// &lt;summary&gt;
+        /// Takes the real-valued Cos and Sin components of Fourier transformed signal and reconstructs the time-domain signal
+        /// &lt;/summary&gt;
+        /// &lt;param name="cos"&gt;Array of cos components, containing frequency components from 0 to pi. sin.Length must match cos.Length&lt;/param&gt;
+        /// &lt;param name="sin"&gt;Array of sin components, containing frequency components from 0 to pi. sin.Length must match cos.Length&lt;/param&gt;
+        /// &lt;param name="len"&gt;
+        /// The length of the output signal. 
+        /// If len &lt; (partials-1)*2 then frequency data will be lost in the output signal. 
+        /// if no len parameter is given it defaults to (partials-1)*2
+        /// &lt;/param&gt;
+        /// &lt;returns&gt;the real-valued time-domain signal&lt;/returns&gt;
+        public static double[] IDFT(double[] cos, double[] sin, int len = 0)
+        {
+            if (cos.Length != sin.Length) throw new ArgumentException("cos.Length and sin.Length bust match!");
+
+            if (len == 0)
+                len = (cos.Length - 1) * 2;
+
+            double[] output = new double[len];
+
+            int partials = sin.Length;
+            if (partials &gt; len / 2)
+                partials = len / 2;
+
+            for (int n = 0; n &lt;= partials; n++)
+            {
+                for (int i = 0; i &lt; len; i++)
+                {
+                    output[i] += Math.Cos(2 * Math.PI * n / len * i) * cos[n];
+                    output[i] += Math.Sin(2 * Math.PI * n / len * i) * sin[n];
+                }
+            }
+
+            return output;
+        }
+    }
+}
+</code></pre>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <div>
+            <p>Valdemar Erlingsson</p>
+            <ul>
+                    <li><a href="Index.html">About</a></li>
+                    <li><a href="Article-Index.html">Articles</a></li>
+                    <li><a href="Projects.html">Projects</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

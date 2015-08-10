@@ -30,9 +30,6 @@
             }
 
             function init() {
-                var ox = width / 10 / 2;
-                var oy = height / 10 / 2;
-
                 for (var i = 0; i < 100; i++) {
                     var point = { x: width / 2, y: height / 2 };
                     point.x += width / 2 * Math.cos(i / 5) * Math.exp(-i / 80) - 20;
@@ -120,16 +117,13 @@
 
                 var i = 1000;
                 while (i-- > 0) {
-
                     var newRoute = permutate(currentRoute);
-
                     var newDist = getDistance(newRoute);
                     var accept = Math.random() < acceptance(currentDistance, newDist);
                     currentTemp *= 0.99999;
                     if (accept) {
                         currentRoute = newRoute;
                         currentDistance = newDist;
-                        
                     }
 
                     iteration++;

@@ -1,0 +1,202 @@
+<html>
+<head>
+    <link href="Templates/styles.css" rel="stylesheet" type="text/css">
+    <title>Valdemar Erlingsson - Non-nullable reference objects in C#</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Parallax Header -->
+    <script type="text/javascript">
+        window.addEventListener("scroll", function (a, b) {
+            var header = document.getElementById("header");
+            var headerHeight = header.clientHeight;
+            var scr = document.body.scrollTop;
+            var ratio = scr / headerHeight;
+            var minPos = 0.2;
+            var newPos = minPos + ratio;
+            if (newPos > 1) newPos = 1;
+            var val = (newPos * 100) + '%';
+            header.style["background-position-y"] = val;
+            header.style["top"] = (0.1 * scr) + "px";
+        });
+    </script>
+</head>
+
+<body>
+    <div id="header">
+        <div id="header-text">
+            
+        </div>
+    </div>
+
+    <div id="header-menu">
+        <ul>
+            <li><a href="Index.html">About</a></li>
+            <li><a href="Article-Index.html">Articles</a></li>
+            <li><a href="Projects.html">Projects</a></li>
+        </ul>
+    </div>
+
+    <div class="content-main">
+            <h1>Non-nullable reference objects in C#</h1>
+        
+            <div class="date-container">Apr 19. 2013</div>
+
+        <div class="article-main">
+            <p>Often, it is useful to assert as quickly as possible that the data passed into a function is out of bounds or illegal is some way. Checking for obvious errors early can lead to code that is easier to debug when it eventually break (as all code does).</p>
+
+<p>This is an example of a non-nullable wrapper for C#.</p>
+
+<p>You can think of it like the complete opposite of Nullable&lt;T&gt;:</p>
+
+<ul>
+<li>Nullable&lt;T&gt; gives you the ability to pass around or store either a value or null.</li>
+<li>Required&lt;T&gt; forces the value to be non-null.</li>
+</ul>
+
+<p>Trying to assign null to a Required&lt;T&gt; variable, or passing null into a method that defines the input as Required&lt;T&gt; will cause an exception. This is good because the sooner we catch errors, the better. Code that fails early is much easier to debug and maintain than code that fails five calls deeper.</p>
+
+<h2>The Code:</h2>
+
+<pre><code>namespace System
+{
+    /// &lt;summary&gt;
+    /// Non-nullable wrapper.
+    /// &lt;/summary&gt;
+    /// &lt;typeparam name="T"&gt;&lt;/typeparam&gt;
+    public struct Required&lt;T&gt;
+    {
+        T _value;
+        public T Value
+        {
+            get { return _value; }
+            private set { _value = value; }
+        }
+
+        public Required(T val)
+        {
+            _value = default(T);
+
+            if (((object)val) != null)
+                Value = val;
+            else
+                throw new ArgumentNullException("Required value cannot be null");
+        }
+
+        public static implicit operator Required&lt;T&gt;(T val)
+        {
+            return new Required&lt;T&gt;(val);
+        }
+
+        public static implicit operator T(Required&lt;T&gt; val)
+        {
+            return val.Value;
+        }
+
+        public static bool operator ==(Required&lt;T&gt; a, Required&lt;T&gt; b)
+        {
+            if (System.Object.ReferenceEquals(a, b))
+                return true;
+
+            return a.Value.Equals(b.Value);
+        }
+
+        public static bool operator !=(Required&lt;T&gt; a, Required&lt;T&gt; b)
+        {
+            return !(a == b);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            try
+            {
+                T val = (T)obj;
+                return Value.Equals(val);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool Equals(T obj)
+        {
+            // Return true if the fields match:
+            return Value.Equals(obj);
+        }
+
+        public override string ToString()
+        {
+            return _value.ToString();
+        }
+    }
+}
+</code></pre>
+
+<h2>A Simple test:</h2>
+
+<pre><code>/// Simple example that show how to use Required&lt;T&gt; wrapper.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RequiredTest
+{
+    class Person
+    {
+        public string Name;
+        public override string ToString() { return "Name: " + Name; }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var person = new Person();
+            person.Name = "Valdemar";
+            Do(person);
+            Do(null); // throws an exception
+        }
+
+        static void Do(Required&lt;Person&gt; person)
+        {
+            // Convert to Person. Can also use person.Value
+            Console.WriteLine("your name is " + ((Person)person).Name); 
+
+            ChangeName(person); // implicit conversion back to Person
+            Console.WriteLine(person.ToString()); // invokes Person.ToString()
+        }
+
+        static void ChangeName(Person person)
+        {
+            person.Name = "Mister T.";
+        }
+    }
+}
+</code></pre>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <div>
+            <p>Valdemar Erlingsson</p>
+            <ul>
+                    <li><a href="Index.html">About</a></li>
+                    <li><a href="Article-Index.html">Articles</a></li>
+                    <li><a href="Projects.html">Projects</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

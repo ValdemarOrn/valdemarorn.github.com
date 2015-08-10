@@ -1,7 +1,7 @@
 <html>
 <head>
     <link href="Templates/styles.css" rel="stylesheet" type="text/css">
-    <title>Valdemar Erlingsson - Valdemar Erlingsson</title>
+    <title>Valdemar Erlingsson - Anonymous Lists in C#</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">
@@ -28,7 +28,7 @@
 <body>
     <div id="header">
         <div id="header-text">
-            Valdemar Erlingsson
+            
         </div>
     </div>
 
@@ -41,24 +41,42 @@
     </div>
 
     <div class="content-main">
-            <h1>Valdemar Erlingsson</h1>
+            <h1>Anonymous Lists in C#</h1>
         
+            <div class="date-container">Oct 10. 2011</div>
 
         <div class="article-main">
-            <h2>About Me</h2>
+            <p>This code is from a Gist I wrote when I was starting to use C#. It was one of those things that brought a "woah, dude" moment. Of course, you can actually implement this quite trivially with LINQ, but I didn't know that at the time!</p>
 
-<ul>
-<li><a href="Reading-List.html">My Reading List</a></li>
-<li><a href="mailto:valdiorn@gmail.com">Send me an E-mail</a></li>
-</ul>
+<pre><code>class AnonList
+{
 
-<h2>Social Media</h2>
+    /// &lt;summary&gt;
+    /// Creates a list of type T using a prototype object. Prototype can be any object, including an anonymous type. 
+    /// &lt;/summary&gt;
+    /// &lt;typeparam name="T"&gt;&lt;/typeparam&gt;
+    /// &lt;param name="prototype"&gt;The prototype object, of which a List of the same type is returned&lt;/param&gt;
+    /// &lt;returns&gt;A new empty List of the same type as prototype&lt;/returns&gt;
+    public static List&lt;T&gt; CreateAnonList&lt;T&gt;(T prototype)
+    {
+        return new List&lt;T&gt;();
+    }
 
-<ul>
-<li><a href="https://github.com/ValdemarOrn">My Github</a></li>
-<li><a href="http://careers.stackoverflow.com/valdemar">Me on Careers 2.0</a></li>
-<li><a href="http://www.soundcloud.com/lowprofilemusic">My Music on Soundcloud</a></li>
-</ul>
+}
+</code></pre>
+
+<p>To use this:</p>
+
+<pre><code>var k = new { A = 23, B = "Foo" };
+var list1 = AnonList.CreateAnonList(k);
+
+// of course, with a bit of LINQ, you can just do:
+// (although this also places the item in the list)
+var list2 = new [] { k }.ToList();
+
+list1.Dump();
+list2.Dump();
+</code></pre>
 
         </div>
 
