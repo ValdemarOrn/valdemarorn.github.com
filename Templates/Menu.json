@@ -1,5 +1,5 @@
 [
-    { "Caption": "About", Url: "Index.html" },
+    { "Caption": "About", Url: "index.html" },
     { "Caption": "Articles", Url: "Article-Index.html" },
     { "Caption": "Projects", Url: "Projects.html" }
 ]

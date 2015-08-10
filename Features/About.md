@@ -1,6 +1,6 @@
 <!--
 { 
-    "Id": "Index",
+    "Id": "index",
     "Title": "Valdemar Erlingsson",
     "WindowTitle": "Valdemar Erlingsson"
 }
