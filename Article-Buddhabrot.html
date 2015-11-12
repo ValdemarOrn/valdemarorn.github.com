@@ -1,0 +1,137 @@
+<html>
+<head>
+    <link href="Templates/Styles.css" rel="stylesheet" type="text/css">
+    <title>Valdemar Erlingsson - A short Introduction to the Buddhabrot</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Parallax Header -->
+    <script type="text/javascript">
+        window.addEventListener("scroll", function (a, b) {
+            var header = document.getElementById("header");
+            var headerHeight = header.clientHeight;
+            var scr = document.body.scrollTop;
+            var ratio = scr / headerHeight;
+            var minPos = 0.2;
+            var newPos = minPos + ratio;
+            if (newPos > 1) newPos = 1;
+            var val = (newPos * 100) + '%';
+            header.style["background-position-y"] = val;
+            header.style["top"] = (0.1 * scr) + "px";
+        });
+    </script>
+</head>
+
+<body>
+    <div id="header">
+        <div id="header-text">
+            
+        </div>
+    </div>
+
+    <div id="header-menu">
+        <ul>
+            <li><a href="index.html">About</a></li>
+            <li><a href="Article-Index.html">Articles</a></li>
+            <li><a href="Projects.html">Projects</a></li>
+        </ul>
+    </div>
+
+    <div class="content-main">
+            <h1>A short Introduction to the Buddhabrot</h1>
+        
+            <div class="date-container">Jun 01. 2015</div>
+
+        <div class="article-main">
+            <h2>A short Introduction to the Buddhabrot</h2>
+
+<p>The Buddhabrot is an alternative representation of the Mandelbrot set. As such, we must first figure out how the Mandelbrot set works.</p>
+
+<p>In short, the Mandelbrot set consists of all points c that fulfill the following condition:</p>
+
+<pre><code>z_n+1 = z_n^2 + c
+z_n+1 remains bounded as n approaches infinity.
+</code></pre>
+
+<p>Now, what does that actually mean? Simply, it means that if we iteratively compute z<em>1, z</em>2... z<em>n, the numbers do not grow larger and larger, but rather stay bounded (by which I mean the |z</em>i|, the absolute value, the length of the vector from 0,0 to Re(z<em>i),Im(z</em>i), is below some threshold)</p>
+
+<p>But we often see images like these: </p>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Mandel_zoom_00_mandelbrot_set.jpg/322px-Mandel_zoom_00_mandelbrot_set.jpg" alt="" /> </p>
+
+<p>Here, the picture shows different colors, depending on how many iterations it took for the sequence of numbers z<em>1...z</em>i to escape some pre-set boundary. In practice, a boundary of 2.0 is a good choice, as all the numbers in the Mandelbrot set lie within the circle with center 0,0 and radius 2.0. The color is used to represent the number of iterations it takes to escape that boundary.</p>
+
+<p>When you render the Mandelbrot set as a picture, you do so for every point c, where c is a pixel on the photo. The Buddhabrot is a different rendering of the same dataset.</p>
+
+<p>Instead of simply coloring the point c based on how many iterations it took to escape the boundary, we plot the sequence {z<em>i}, for any point c that escapes. As we cannot in practice compute an infinite number of iterations for every point (remember, the Mandelbrot formula states "z</em>n+1 remains bounded as n approaches <em>infinity</em>) we have to select some threshold for the number of iterations before we "give up", and assume that the point remains bounded. The output varies significantly depending on the threshold we choose. </p>
+
+<h2>Initial version: C&#35;</h2>
+
+<p>The initial version I built uses multiple threads, each with its own buffer to store the output. I did this as I noticed that if I shared a single buffer between all the threads, I had to use Interlocked.Increment() to increase the pixel values in the buffer, otherwise artefacts would show up in the picture due to multiple treads modifying the same data simultaneously, and the increment would do be computed correctly.</p>
+
+<p>Instead, each thread has its own buffer, and all the buffers get combined in the end.</p>
+
+<p>Running the program with the following arguments:</p>
+
+<pre><code>-file c:\\brotCpu.bmp -w 2160 -h 3840 -it 1000 -xmin -2.0 -xmax 1.1 -samples 1000000000
+</code></pre>
+
+<p>gives the following output:</p>
+
+<pre><code>...
+...
+Calculated 920,0 Million samples in 37,961 sec
+Calculated 930,0 Million samples in 38,069 sec
+Calculated 940,0 Million samples in 38,131 sec
+Calculated 950,0 Million samples in 38,166 sec
+Calculated 960,0 Million samples in 38,169 sec
+Calculated 970,0 Million samples in 41,052 sec
+Calculated 980,0 Million samples in 41,075 sec
+Calculated 990,0 Million samples in 41,110 sec
+Calculated 1000,0 Million samples in 41,121 sec
+</code></pre>
+
+<p><img src="Content/Buddhabrot/brotCpu.png" alt="" /></p>
+
+<p>The image has been scaled to 25% and rotated 90 degrees clockwise.</p>
+
+<p>On my 6 core (hyperthreading) i7 Extreme, the C# version computes 24.3 million samples per second. </p>
+
+<h2>Second version: Nvidia Cuda</h2>
+
+<p>I decided that the Buddhabrot would make a good test case for integrating Cuda and C#. I have previously worked with Cuda, but not from C#, and I had been curious to explore the different options of doing so.</p>
+
+<p>I eventually settled on using Managed Cuda, as the API is quite nice (although seriously under-documented). I particularly like the ability for load PTX files directly at runtime. This allows you write you Cuda kernel in a separate project, and then dynamically load it into your C# program.</p>
+
+<h3>Results</h3>
+
+<pre><code>Starting...
+Generated 214,8 Million samples in 0,773 sec
+Generated 429,7 Million samples in 1,544 sec
+Generated 644,5 Million samples in 2,315 sec
+Generated 859,3 Million samples in 3,087 sec
+</code></pre>
+
+<p>That looks a lot faster than before. On my GeForce 780 Superclocked, the Cuda version computes 278.4 million samples per second. That is an improvement of ~ 11.5x over the CPU version.</p>
+
+<p>You can find the code <strong><a href="https://github.com/ValdemarOrn/Buddhabrot">on Github</a></strong></p>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <div>
+            <p>Valdemar Erlingsson</p>
+            <ul>
+                    <li><a href="index.html">About</a></li>
+                    <li><a href="Article-Index.html">Articles</a></li>
+                    <li><a href="Projects.html">Projects</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

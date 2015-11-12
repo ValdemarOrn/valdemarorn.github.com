@@ -63,7 +63,7 @@ The output:
 
 	Pi is approx 3.1419
 
-Well, that was easy! Granted, it's not too accurate, but that does give 4 significant figures for only 291 ms of runtime (on my i7 4930K).
+Well, that was easy! Granted, it's not too accurate, but that does give 4 significant figures for only 291 ms of runtime (test with an i7 4930K).
 
 But wait, you mentioned GPGPU and parallelization! This is single threaded, how can we improve it?
 
@@ -96,7 +96,7 @@ Let's try using PLINQ to parallelize it, and re-write the program as such:
 		Console.WriteLine("Pi is approx {0:0.0000}", pi);
 	}
 
-My i7 Extreme has 6 logical cores and with hyperthreading, it can run 12 threads in parallel. Irregardless, this code takes 460ms to run on my machine (about 60% longer overall), but it is in fact computing 12x more samples than before, as the operating system is reporting Environment.ProcessorCount = 12. This means the program is now about 7.5x faster than before!
+On an i7 Extreme with 6 logical cores it can run 12 threads with hyperthreading in parallel. This code takes 460ms to execute (about 60% longer overall), but it is in fact computing 12x more samples than before, as the operating system is reporting Environment.ProcessorCount = 12. This means the program is now about 7.5x faster than before.
 
 ## Some Notes:
 
