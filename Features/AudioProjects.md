@@ -58,7 +58,7 @@ Rodent is an emulation of the classic ProCo Rat distortion pedal. It includes se
 
 SmashMaster is an emulation of the Marshall Shred Master distortion pedal
 
-<img src="Content/AudioProjects/SmashMaster.png" alt="">
+<img src="Content/AudioProjects/Smash-Master.png" alt="">
 
 [Project webpage on Github](https://github.com/ValdemarOrn/SharpSoundPlugins)
 
