@@ -7,6 +7,8 @@
 
 # Side Projects
 
+**Be sure to check out the Audio Projects page** 
+
 ## Vladivostok Chess Engine
 
 A fully functional UCI-compliant chess engine for Windows and Linux (x64 only) written in C/C++/C#/Assembly
@@ -23,21 +25,13 @@ VST Plugin Collection built with C# and .NET
 
 [Source code, release and documentation available on Github](https://github.com/ValdemarOrn/SharpSoundDevice)
 
-## CloudSeed Algorithmic Reverb
+## LowProfile.FFT
 
-CloudSeed is an algorithmic reverb plugin built in C# and C++ for emulating huge, endless spaces and modulating echoes, in the spirit of classic studio reverb units like the Lexicon 224.
+A fairly fast FFT library with implementations in both C# and C++
 
-**Technology used:** *C#, C++, WPF, Steinberg VST SDK*
+**Technology used:** *C#, C++*
 
-[Alpha version available](https://github.com/ValdemarOrn/CloudSeed)
-
-## Wavegrounds
-
-Wavegrounds is a Javscript application for generating art from mathematical functions.
-
-**Technology used:** *Javascript, jQuery*
-
-[Wavegrounds](http://wavegrounds.analogwindow.com/)
+[Project web page on Github](https://github.com/ValdemarOrn/LowProfile.FFT)
 
 ## Just Play Chess (beta)
 
@@ -55,16 +49,12 @@ Electronic Drum Module based on a PIC18F microcontroller with control software f
 
 [KickBrain on Github](https://github.com/ValdemarOrn/KickBrain)
 
-## Guitar Exercises
-
-A library of guitar exercises, typeset in html form
-
-[Download a free copy from Github](https://github.com/ValdemarOrn/GuitarExercises)
-
 <br/>
 <br/>
 
 # Javascript Demos
+
+A collection of small Javascript demos and games I've built for fun.
 
 ## Conway's Game of Life
 
@@ -84,8 +74,10 @@ A library of guitar exercises, typeset in html form
 
 [HTML5 / Javascript / Canvas graphics demo.](http://jsdemos.analogwindow.com/Mystiq)
 
-## Runner
+## Wavegrounds
 
-**Technology used:** *Javascript, Html Canvas*
+Wavegrounds is a Javscript application for generating art from mathematical functions.
 
-[HTML5 / Javascript / Canvas graphics demo.](http://jsdemos.analogwindow.com/Runner)
+**Technology used:** *Javascript, jQuery*
+
+[Wavegrounds](http://wavegrounds.analogwindow.com/)
